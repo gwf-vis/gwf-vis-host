@@ -5,40 +5,40 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { MapView, PluginDefinition } from "./components/gwf-main-vis/gwf-main-vis";
+import { MapView, PluginDefinition } from "./components/gwf-vis-host/gwf-vis-host";
 export namespace Components {
-    interface GwfMainVis {
+    interface GwfVisHost {
         "plugins": PluginDefinition[];
         "preferCanvas": boolean;
         "view": MapView;
     }
 }
 declare global {
-    interface HTMLGwfMainVisElement extends Components.GwfMainVis, HTMLStencilElement {
+    interface HTMLGwfVisHostElement extends Components.GwfVisHost, HTMLStencilElement {
     }
-    var HTMLGwfMainVisElement: {
-        prototype: HTMLGwfMainVisElement;
-        new (): HTMLGwfMainVisElement;
+    var HTMLGwfVisHostElement: {
+        prototype: HTMLGwfVisHostElement;
+        new (): HTMLGwfVisHostElement;
     };
     interface HTMLElementTagNameMap {
-        "gwf-main-vis": HTMLGwfMainVisElement;
+        "gwf-vis-host": HTMLGwfVisHostElement;
     }
 }
 declare namespace LocalJSX {
-    interface GwfMainVis {
+    interface GwfVisHost {
         "plugins"?: PluginDefinition[];
         "preferCanvas"?: boolean;
         "view"?: MapView;
     }
     interface IntrinsicElements {
-        "gwf-main-vis": GwfMainVis;
+        "gwf-vis-host": GwfVisHost;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "gwf-main-vis": LocalJSX.GwfMainVis & JSXBase.HTMLAttributes<HTMLGwfMainVisElement>;
+            "gwf-vis-host": LocalJSX.GwfVisHost & JSXBase.HTMLAttributes<HTMLGwfVisHostElement>;
         }
     }
 }

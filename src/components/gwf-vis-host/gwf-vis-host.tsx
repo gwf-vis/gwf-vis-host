@@ -9,11 +9,11 @@ export type PluginDefinition = {
 };
 
 @Component({
-  tag: 'gwf-main-vis',
-  styleUrl: 'gwf-main-vis.css',
+  tag: 'gwf-vis-host',
+  styleUrl: 'gwf-vis-host.css',
   shadow: true,
 })
-export class GwfMainVis implements ComponentInterface {
+export class GwfVisHost implements ComponentInterface {
   private mapElement: HTMLDivElement;
   private invisiblePluginContainer: HTMLDivElement;
   private map: leaflet.Map;

@@ -1,7 +1,7 @@
 import { Config } from '@stencil/core';
 
 export const config: Config = {
-  namespace: 'gwf-main-vis',
+  namespace: 'gwf-vis-host',
   outputTargets: [
     {
       type: 'dist',
