@@ -55,19 +55,7 @@ export class GwfVisHost implements ComponentInterface {
         <div id="map" ref={el => (this.mapElement = el)}></div>
         <div id="invisible-plugin-container" hidden ref={el => (this.invisiblePluginContainer = el)}></div>
         {this.loadingActive && (
-          <div
-            id="loading"
-            style={{
-              position: 'fixed',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              borderRadius: '.5rem',
-              border: '1px solid grey',
-              padding: '1rem',
-              fontSize: '2rem',
-            }}
-          >
+          <div id="loading" class="leaflet-control leaflet-control-layers">
             Loading...
           </div>
         )}
