@@ -6,11 +6,16 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { MapView, PluginDefinition } from "./components/gwf-vis-host/gwf-vis-host";
+import { GwfVisHost } from "./components/gwf-vis-host/gwf-vis-host";
 export namespace Components {
     interface GwfVisHost {
         "plugins": PluginDefinition[];
         "preferCanvas": boolean;
         "view": MapView;
+    }
+    interface GwfVisHostSidebar {
+        "active": boolean;
+        "visHost": GwfVisHost;
     }
 }
 declare global {
@@ -20,8 +25,15 @@ declare global {
         prototype: HTMLGwfVisHostElement;
         new (): HTMLGwfVisHostElement;
     };
+    interface HTMLGwfVisHostSidebarElement extends Components.GwfVisHostSidebar, HTMLStencilElement {
+    }
+    var HTMLGwfVisHostSidebarElement: {
+        prototype: HTMLGwfVisHostSidebarElement;
+        new (): HTMLGwfVisHostSidebarElement;
+    };
     interface HTMLElementTagNameMap {
         "gwf-vis-host": HTMLGwfVisHostElement;
+        "gwf-vis-host-sidebar": HTMLGwfVisHostSidebarElement;
     }
 }
 declare namespace LocalJSX {
@@ -30,8 +42,13 @@ declare namespace LocalJSX {
         "preferCanvas"?: boolean;
         "view"?: MapView;
     }
+    interface GwfVisHostSidebar {
+        "active"?: boolean;
+        "visHost"?: GwfVisHost;
+    }
     interface IntrinsicElements {
         "gwf-vis-host": GwfVisHost;
+        "gwf-vis-host-sidebar": GwfVisHostSidebar;
     }
 }
 export { LocalJSX as JSX };
@@ -39,6 +56,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "gwf-vis-host": LocalJSX.GwfVisHost & JSXBase.HTMLAttributes<HTMLGwfVisHostElement>;
+            "gwf-vis-host-sidebar": LocalJSX.GwfVisHostSidebar & JSXBase.HTMLAttributes<HTMLGwfVisHostSidebarElement>;
         }
     }
 }

@@ -17,6 +17,8 @@ export class GwfVisHost implements ComponentInterface {
   private mapElement: HTMLDivElement;
   private invisiblePluginContainer: HTMLDivElement;
   private map: leaflet.Map;
+  private sidebar: leaflet.Control;
+  private sidebarElement: HTMLGwfVisHostSidebarElement;
   private layerControl: leaflet.Control.Layers;
   private pluginMap: Map<PluginDefinition, { class: any; instance: HTMLElement }>;
 
@@ -65,6 +67,7 @@ export class GwfVisHost implements ComponentInterface {
   private async initialize() {
     if (!this.map) {
       await this.initializeMap();
+      await this.initializeSidebar();
       await this.loadPlugins();
       this.loadingActive = false;
     }
@@ -74,6 +77,22 @@ export class GwfVisHost implements ComponentInterface {
     this.map = leaflet.map(this.mapElement, { preferCanvas: this.preferCanvas });
     this.handleViewChange(this.view);
     await this.initializeLayerControl();
+    this.map.zoomControl.setPosition('topright');
+  }
+
+  private async initializeSidebar() {
+    this.sidebar?.remove();
+    const sidebarControl = leaflet.Control.extend({
+      onAdd: () => {
+        this.sidebarElement = leaflet.DomUtil.create('gwf-vis-host-sidebar');
+        this.sidebarElement.classList.add('leaflet-control-layers');
+        this.stopEventPropagationToTheMapElement(this.sidebarElement);
+        this.sidebarElement.visHost = this;
+        return this.sidebarElement;
+      },
+    });
+    this.sidebar = new sidebarControl({ position: 'topleft' });
+    this.addControlToMap(this.sidebar);
   }
 
   private async loadPlugins() {
@@ -94,6 +113,9 @@ export class GwfVisHost implements ComponentInterface {
       switch (pluginClass?.['__PLUGIN_FOR__']) {
         case 'layer':
           this.invisiblePluginContainer?.append(pluginInstance);
+          break;
+        case 'sidebar':
+          this.sidebarElement?.append(pluginInstance);
           break;
       }
       this.pluginMap.set(plugin.props, { class: pluginClass, instance: pluginInstance });
@@ -135,5 +157,10 @@ export class GwfVisHost implements ComponentInterface {
 
   private assignProps(target: any, source: any) {
     Object.entries(source || {}).forEach(([key, value]) => (target[key] = value));
+  }
+
+  private stopEventPropagationToTheMapElement(element: HTMLElement) {
+    element.addEventListener('mouseover', () => this.map.dragging.disable());
+    element.addEventListener('mouseout', () => this.map.dragging.enable());
   }
 }
