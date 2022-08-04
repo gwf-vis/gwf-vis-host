@@ -3,17 +3,20 @@ import leaflet from 'leaflet';
 import { obtainMetadata, obtainShape, obtainValue } from './obtain-mock-data';
 import injectedCssForSidebarPlugin from './inject-to-sidebar-plugin.css';
 
-export type MapView = { center: leaflet.LatLngExpression; zoom?: number; options?: leaflet.ZoomPanOptions };
+export type MapView = {
+  center: leaflet.LatLngExpression;
+  zoom?: number;
+  options?: leaflet.ZoomPanOptions;
+};
 
 export type PluginDefinition = {
   url: string;
   props?: any;
 };
 
-export interface GlobalInfoDict {
-  dimensionDict: { [dimension: string]: number };
-  locationSelection: { datasetName: string; locationId: string };
-}
+export type GlobalInfoDict = {
+  [key: string]: any;
+};
 
 @Component({
   tag: 'gwf-vis-host',
