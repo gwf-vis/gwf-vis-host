@@ -121,6 +121,7 @@ export class GwfVisHost implements ComponentInterface {
         ...plugin.props,
         leaflet,
         addToMapDelegate: this.addLayer,
+        removeFromMapDelegate: this.removeLayer,
         obtainDataDelegateDict: {
           obtainShape,
           obtainValue,
@@ -187,6 +188,13 @@ export class GwfVisHost implements ComponentInterface {
     }
     if (active) {
       layer.addTo(this.map);
+    }
+  };
+
+  private removeLayer = (layer: leaflet.Layer) => {
+    if (layer) {
+      this.layerControl?.removeLayer(layer);
+      layer.remove();
     }
   };
 
