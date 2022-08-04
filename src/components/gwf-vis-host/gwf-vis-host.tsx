@@ -59,7 +59,7 @@ export class GwfVisHost implements ComponentInterface {
 
   private async loadPlugins() {
     this.pluginMap = new Map();
-    this.plugins?.forEach(this.loadPlugin);
+    this.plugins?.forEach(plugin => this.loadPlugin(plugin));
   }
 
   private async loadPlugin(plugin: PluginDefinition) {
