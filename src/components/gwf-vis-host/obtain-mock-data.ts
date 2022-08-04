@@ -48,8 +48,8 @@ export function fetchData(query: any) {
       };
     case 'metadata':
       return {
-        One: 'Something',
-        Two: 'Something else',
+        Text: 'Something',
+        'HTML Rich': '<img width="100%" src="https://gwf.usask.ca/images/logos/GWF_Globe.png"/>This is an icon.'
       };
     case 'values':
       let valid = false;
