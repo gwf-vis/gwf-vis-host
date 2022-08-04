@@ -8,14 +8,14 @@ import { GwfVisHost } from '../gwf-vis-host/gwf-vis-host';
 })
 export class GwfVisHostSidebar implements ComponentInterface {
   @Prop() visHost: GwfVisHost;
-  @Prop({ reflect: true, mutable: true }) active: boolean = false;
+  @Prop({ reflect: true, mutable: true }) active: boolean = true;
 
   render() {
     return (
       <Host>
         <input part="toggle" type="checkbox" checked={this.active} onChange={({ currentTarget }) => (this.active = (currentTarget as HTMLInputElement).checked)} />
         <div part="container">
-          <slot>Hello World!</slot>
+          <slot>Sidebar</slot>
         </div>
       </Host>
     );

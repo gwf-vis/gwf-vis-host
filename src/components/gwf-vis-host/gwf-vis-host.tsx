@@ -1,5 +1,6 @@
 import { Component, Host, h, ComponentInterface, Prop, Watch, State } from '@stencil/core';
 import leaflet from 'leaflet';
+import { obtainMetadata, obtainShape, obtainValue } from './obtain-mock-data';
 
 export type MapView = { center: leaflet.LatLngExpression; zoom?: number; options?: leaflet.ZoomPanOptions };
 
@@ -7,6 +8,11 @@ export type PluginDefinition = {
   url: string;
   props?: any;
 };
+
+export interface GlobalInfoDict {
+  dimensionDict: { [dimension: string]: number };
+  locationSelection: { datasetName: string; locationId: string };
+}
 
 @Component({
   tag: 'gwf-vis-host',
@@ -21,6 +27,7 @@ export class GwfVisHost implements ComponentInterface {
   private sidebarElement: HTMLGwfVisHostSidebarElement;
   private layerControl: leaflet.Control.Layers;
   private pluginMap: Map<PluginDefinition, { class: any; instance: HTMLElement }>;
+  private globalInfoDict: GlobalInfoDict;
 
   @State() loadingActive = true;
 
@@ -109,7 +116,18 @@ export class GwfVisHost implements ComponentInterface {
       const pluginTagName = pluginClass?.['__PLUGIN_TAG_NAME__'];
       this.definePlugin(pluginTagName, pluginClass as any);
       const pluginInstance = document.createElement(pluginTagName);
-      this.assignProps(pluginInstance, { ...plugin.props, leaflet, addToMapDelegate: this.addLayer });
+      this.assignProps(pluginInstance, {
+        ...plugin.props,
+        leaflet,
+        addToMapDelegate: this.addLayer,
+        obtainDataDelegateDict: {
+          obtainShape,
+          obtainValue,
+          obtainMetadata,
+        },
+        globalInfoDict: this.globalInfoDict,
+        updateGlobalInfoDelegate: this.updateGlobalInfoDict,
+      });
       switch (pluginClass?.['__PLUGIN_FOR__']) {
         case 'layer':
           this.invisiblePluginContainer?.append(pluginInstance);
@@ -135,6 +153,25 @@ export class GwfVisHost implements ComponentInterface {
     }
   }
 
+  private assignProps(target: any, source: any) {
+    Object.entries(source || {}).forEach(([key, value]) => (target[key] = value));
+  }
+
+  private stopEventPropagationToTheMapElement(element: HTMLElement) {
+    element.addEventListener('mouseover', () => {
+      this.map.dragging.disable();
+      this.map.scrollWheelZoom.disable();
+    });
+    element.addEventListener('mouseout', () => {
+      this.map.dragging.enable();
+      this.map.scrollWheelZoom.enable();
+    });
+  }
+
+  private addControlToMap = async (control: leaflet.Control) => {
+    control.addTo(this.map);
+  };
+
   private addLayer = async (layer: leaflet.Layer, name: string, type: 'base-layer' | 'overlay', active = false) => {
     if (this.layerControl) {
       switch (type) {
@@ -151,16 +188,8 @@ export class GwfVisHost implements ComponentInterface {
     }
   };
 
-  private addControlToMap = async (control: leaflet.Control) => {
-    control.addTo(this.map);
+  private updateGlobalInfoDict = (globalInfoDict: GlobalInfoDict) => {
+    this.globalInfoDict = globalInfoDict;
+    this.pluginMap.forEach(({ instance }) => ((instance as any).globalInfoDict = this.globalInfoDict));
   };
-
-  private assignProps(target: any, source: any) {
-    Object.entries(source || {}).forEach(([key, value]) => (target[key] = value));
-  }
-
-  private stopEventPropagationToTheMapElement(element: HTMLElement) {
-    element.addEventListener('mouseover', () => this.map.dragging.disable());
-    element.addEventListener('mouseout', () => this.map.dragging.enable());
-  }
 }
