@@ -25,11 +25,11 @@ export class GwfVisHost implements ComponentInterface {
   @Prop() plugins: PluginDefinition[];
   @Prop() preferCanvas: boolean = true;
 
-  @Prop() view: MapView = { center: [51.312588, -116.021118], zoom: 10 };
+  @Prop() view: MapView;
 
   @Watch('view')
   handleViewChange(view: MapView) {
-    this.map?.setView(view?.center, view?.zoom, view?.options);
+    this.map?.setView(view?.center || [0, 0], view?.zoom || 0, view?.options);
   }
 
   componentDidLoad() {
