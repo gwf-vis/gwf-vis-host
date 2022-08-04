@@ -1,7 +1,7 @@
 import { Component, Host, h, ComponentInterface, Prop, Watch, State } from '@stencil/core';
 import leaflet from 'leaflet';
-import { obtainMetadata, obtainShape, obtainValue } from './obtain-mock-data';
 import injectedCssForSidebarPlugin from './inject-to-sidebar-plugin.css';
+import { fetchData } from './obtain-mock-data';
 
 export type MapView = {
   center: leaflet.LatLngExpression;
@@ -125,11 +125,7 @@ export class GwfVisHost implements ComponentInterface {
         leaflet,
         addToMapDelegate: this.addLayer,
         removeFromMapDelegate: this.removeLayer,
-        obtainDataDelegateDict: {
-          obtainShape,
-          obtainValue,
-          obtainMetadata,
-        },
+        fetchingDataDelegate: fetchData,
         globalInfoDict: this.globalInfoDict,
         updateGlobalInfoDelegate: this.updateGlobalInfoDict,
       });
