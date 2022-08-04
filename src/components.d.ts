@@ -5,8 +5,12 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { MapView, PluginDefinition } from "./components/gwf-main-vis/gwf-main-vis";
 export namespace Components {
     interface GwfMainVis {
+        "plugins": PluginDefinition[];
+        "preferCanvas": boolean;
+        "view": MapView;
     }
 }
 declare global {
@@ -22,6 +26,9 @@ declare global {
 }
 declare namespace LocalJSX {
     interface GwfMainVis {
+        "plugins"?: PluginDefinition[];
+        "preferCanvas"?: boolean;
+        "view"?: MapView;
     }
     interface IntrinsicElements {
         "gwf-main-vis": GwfMainVis;

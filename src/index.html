@@ -11,7 +11,20 @@
 </head>
 
 <body>
-  <gwf-main-vis></gwf-main-vis>
+  <gwf-main-vis id="vis-host"></gwf-main-vis>
+  <script>
+    async function loadPlugins() {
+      try {
+        const response = await fetch('/assets/plugins/plugins.json');
+        const plugins = await response.json();
+        const visHost = document.querySelector('#vis-host');
+        visHost.plugins = plugins;
+      } catch {
+        console.warn('Fail to load plugins.')
+      }
+    }
+    loadPlugins();
+  </script>
 </body>
 
 </html>
