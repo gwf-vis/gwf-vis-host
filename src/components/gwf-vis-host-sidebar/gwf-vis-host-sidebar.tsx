@@ -13,7 +13,13 @@ export class GwfVisHostSidebar implements ComponentInterface {
   render() {
     return (
       <Host>
-        <input part="toggle" type="checkbox" checked={this.active} onChange={({ currentTarget }) => (this.active = (currentTarget as HTMLInputElement).checked)} />
+        <input
+          part="toggle"
+          type="checkbox"
+          checked={this.active}
+          title={this.active ? 'Hide Sidebar' : 'Show Sidebar'}
+          onChange={({ currentTarget }) => (this.active = (currentTarget as HTMLInputElement).checked)}
+        />
         <div part="container">
           <slot>Sidebar</slot>
         </div>
