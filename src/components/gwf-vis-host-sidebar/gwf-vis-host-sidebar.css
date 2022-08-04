@@ -5,8 +5,10 @@
 }
 
 [part='container'] {
-  overflow-x: hidden;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
   width: 30rem;
   transition: width 0.3s;
 }
@@ -44,10 +46,5 @@
 }
 
 ::slotted(*) {
-  margin: var(--leaflet-control-margin);
-  background: var(--leaflet-control-inner-background);
-  border: var(--leaflet-control-border);
-  border-radius: var(--leaflet-control-border-radius);
-  box-shadow: var(--leaflet-control-box-shadow);
-  max-width: 100%;
+  margin: 0.5rem;
 }

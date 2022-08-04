@@ -21,7 +21,12 @@ export class GwfVisHostSidebar implements ComponentInterface {
           onChange={({ currentTarget }) => (this.active = (currentTarget as HTMLInputElement).checked)}
         />
         <div part="container">
-          <slot>Sidebar</slot>
+          <div style={{ overflow: 'auto', flex: '0 0 auto', maxHeight: '50%' }}>
+            <slot name="top"></slot>
+          </div>
+          <div style={{ overflowY: 'auto', flex: '0 0 1' }}>
+            <slot></slot>
+          </div>
         </div>
       </Host>
     );

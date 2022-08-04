@@ -1,6 +1,7 @@
 import { Component, Host, h, ComponentInterface, Prop, Watch, State } from '@stencil/core';
 import leaflet from 'leaflet';
 import { obtainMetadata, obtainShape, obtainValue } from './obtain-mock-data';
+import injectedCssForSidebarPlugin from './inject-to-sidebar-plugin.css';
 
 export type MapView = { center: leaflet.LatLngExpression; zoom?: number; options?: leaflet.ZoomPanOptions };
 
@@ -133,6 +134,7 @@ export class GwfVisHost implements ComponentInterface {
           this.invisiblePluginContainer?.append(pluginInstance);
           break;
         case 'sidebar':
+          pluginInstance.injectedCss = injectedCssForSidebarPlugin;
           this.sidebarElement?.append(pluginInstance);
           break;
       }

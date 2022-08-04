@@ -1,0 +1,12 @@
+[part='header'] {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+[part='content'] {
+  background: var(--leaflet-control-inner-background);
+  border: var(--leaflet-control-border);
+  border-radius: var(--leaflet-control-border-radius);
+  box-shadow: var(--leaflet-control-box-shadow);
+  max-width: 100%;
+}
