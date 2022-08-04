@@ -1,4 +1,4 @@
-import { Component, Host, h, ComponentInterface, Prop, Watch } from '@stencil/core';
+import { Component, Host, h, ComponentInterface, Prop, Watch, State } from '@stencil/core';
 import leaflet from 'leaflet';
 
 export type MapView = { center: leaflet.LatLngExpression; zoom?: number; options?: leaflet.ZoomPanOptions };
@@ -20,8 +20,9 @@ export class GwfVisHost implements ComponentInterface {
   private layerControl: leaflet.Control.Layers;
   private pluginMap: Map<PluginDefinition, { class: any; instance: HTMLElement }>;
 
-  @Prop() plugins: PluginDefinition[];
+  @State() loadingActive = true;
 
+  @Prop() plugins: PluginDefinition[];
   @Prop() preferCanvas: boolean = true;
 
   @Prop() view: MapView = { center: [51.312588, -116.021118], zoom: 10 };
@@ -40,6 +41,23 @@ export class GwfVisHost implements ComponentInterface {
       <Host>
         <div id="map" ref={el => (this.mapElement = el)}></div>
         <div id="invisible-plugin-container" hidden ref={el => (this.invisiblePluginContainer = el)}></div>
+        {this.loadingActive && (
+          <div
+            id="loading"
+            style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              borderRadius: '.5rem',
+              border: '1px solid grey',
+              padding: '1rem',
+              fontSize: '2rem',
+            }}
+          >
+            Loading...
+          </div>
+        )}
       </Host>
     );
   }
@@ -48,18 +66,21 @@ export class GwfVisHost implements ComponentInterface {
     if (!this.map) {
       await this.initializeMap();
       await this.loadPlugins();
+      this.loadingActive = false;
     }
   }
 
   private async initializeMap() {
     this.map = leaflet.map(this.mapElement, { preferCanvas: this.preferCanvas });
     this.handleViewChange(this.view);
-    this.initializeLayerControl();
+    await this.initializeLayerControl();
   }
 
   private async loadPlugins() {
     this.pluginMap = new Map();
-    this.plugins?.forEach(plugin => this.loadPlugin(plugin));
+    for (const plugin of this.plugins) {
+      await this.loadPlugin(plugin);
+    }
   }
 
   private async loadPlugin(plugin: PluginDefinition) {
