@@ -13,9 +13,16 @@ export namespace Components {
         "preferCanvas": boolean;
         "view": MapView;
     }
+    interface GwfVisHostCollapse {
+        "collapsed": boolean;
+    }
     interface GwfVisHostSidebar {
         "active": boolean;
         "visHost": GwfVisHost;
+    }
+    interface GwfVisHostSidebarItemContainer {
+        "header": string;
+        "pluginSlot": string;
     }
 }
 declare global {
@@ -25,15 +32,29 @@ declare global {
         prototype: HTMLGwfVisHostElement;
         new (): HTMLGwfVisHostElement;
     };
+    interface HTMLGwfVisHostCollapseElement extends Components.GwfVisHostCollapse, HTMLStencilElement {
+    }
+    var HTMLGwfVisHostCollapseElement: {
+        prototype: HTMLGwfVisHostCollapseElement;
+        new (): HTMLGwfVisHostCollapseElement;
+    };
     interface HTMLGwfVisHostSidebarElement extends Components.GwfVisHostSidebar, HTMLStencilElement {
     }
     var HTMLGwfVisHostSidebarElement: {
         prototype: HTMLGwfVisHostSidebarElement;
         new (): HTMLGwfVisHostSidebarElement;
     };
+    interface HTMLGwfVisHostSidebarItemContainerElement extends Components.GwfVisHostSidebarItemContainer, HTMLStencilElement {
+    }
+    var HTMLGwfVisHostSidebarItemContainerElement: {
+        prototype: HTMLGwfVisHostSidebarItemContainerElement;
+        new (): HTMLGwfVisHostSidebarItemContainerElement;
+    };
     interface HTMLElementTagNameMap {
         "gwf-vis-host": HTMLGwfVisHostElement;
+        "gwf-vis-host-collapse": HTMLGwfVisHostCollapseElement;
         "gwf-vis-host-sidebar": HTMLGwfVisHostSidebarElement;
+        "gwf-vis-host-sidebar-item-container": HTMLGwfVisHostSidebarItemContainerElement;
     }
 }
 declare namespace LocalJSX {
@@ -42,13 +63,22 @@ declare namespace LocalJSX {
         "preferCanvas"?: boolean;
         "view"?: MapView;
     }
+    interface GwfVisHostCollapse {
+        "collapsed"?: boolean;
+    }
     interface GwfVisHostSidebar {
         "active"?: boolean;
         "visHost"?: GwfVisHost;
     }
+    interface GwfVisHostSidebarItemContainer {
+        "header"?: string;
+        "pluginSlot"?: string;
+    }
     interface IntrinsicElements {
         "gwf-vis-host": GwfVisHost;
+        "gwf-vis-host-collapse": GwfVisHostCollapse;
         "gwf-vis-host-sidebar": GwfVisHostSidebar;
+        "gwf-vis-host-sidebar-item-container": GwfVisHostSidebarItemContainer;
     }
 }
 export { LocalJSX as JSX };
@@ -56,7 +86,9 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "gwf-vis-host": LocalJSX.GwfVisHost & JSXBase.HTMLAttributes<HTMLGwfVisHostElement>;
+            "gwf-vis-host-collapse": LocalJSX.GwfVisHostCollapse & JSXBase.HTMLAttributes<HTMLGwfVisHostCollapseElement>;
             "gwf-vis-host-sidebar": LocalJSX.GwfVisHostSidebar & JSXBase.HTMLAttributes<HTMLGwfVisHostSidebarElement>;
+            "gwf-vis-host-sidebar-item-container": LocalJSX.GwfVisHostSidebarItemContainer & JSXBase.HTMLAttributes<HTMLGwfVisHostSidebarItemContainerElement>;
         }
     }
 }

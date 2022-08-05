@@ -1,0 +1,43 @@
+:host {
+  display: block;
+}
+
+[part='content'] {
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: var(--leaflet-control-margin);
+}
+
+#collapse-toggle:checked ~ [part='content'] {
+  height: 0;
+  padding: 0;
+}
+
+[part='header'] {
+  display: block;
+  cursor: pointer;
+  padding: var(--leaflet-control-margin);
+}
+
+[part='header']::before {
+  content: '';
+  display: inline-block;
+  vertical-align: middle;
+
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 5px solid currentColor;
+
+  vertical-align: middle;
+  margin: 0 0.7rem 0 0.25rem;
+  transform: translateY(-50%) rotate(90deg);
+  transition: transform 0.3s;
+}
+
+#collapse-toggle:checked ~ [part='header']::before {
+  transform: translateY(-50%);
+}
+
+::slotted([slot='header']) {
+  display: inline-block;
+}

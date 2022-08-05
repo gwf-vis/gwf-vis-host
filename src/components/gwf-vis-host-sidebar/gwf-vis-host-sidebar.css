@@ -44,7 +44,3 @@
 [part='toggle']:not(:checked)::after {
   content: '>';
 }
-
-::slotted(*) {
-  margin: 0.5rem;
-}

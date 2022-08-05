@@ -1,6 +1,5 @@
 import { Component, Host, h, ComponentInterface, Prop, Watch, State } from '@stencil/core';
 import leaflet from 'leaflet';
-import injectedCssForSidebarPlugin from './inject-to-sidebar-plugin.css';
 import { fetchData } from './obtain-mock-data';
 
 export type MapView = {
@@ -11,6 +10,7 @@ export type MapView = {
 
 export type PluginDefinition = {
   url: string;
+  slot?: string;
   props?: any;
 };
 
@@ -122,8 +122,11 @@ export class GwfVisHost implements ComponentInterface {
           this.invisiblePluginContainer?.append(pluginInstance);
           break;
         case 'sidebar':
-          pluginInstance.injectedCss = injectedCssForSidebarPlugin;
-          this.sidebarElement?.append(pluginInstance);
+          const itemContainerElement = document.createElement('gwf-vis-host-sidebar-item-container');
+          itemContainerElement.header = await pluginInstance.obtainHeader();
+          itemContainerElement.pluginSlot = plugin.slot;
+          itemContainerElement.append(pluginInstance);
+          this.sidebarElement?.append(itemContainerElement);
           break;
       }
       this.pluginMap.set(plugin.props, { class: pluginClass, instance: pluginInstance });
