@@ -16,6 +16,9 @@ export namespace Components {
     interface GwfVisHostCollapse {
         "collapsed": boolean;
     }
+    interface GwfVisHostMainItemContainer {
+        "header": string;
+    }
     interface GwfVisHostSidebar {
         "active": boolean;
         "visHost": GwfVisHost;
@@ -38,6 +41,12 @@ declare global {
         prototype: HTMLGwfVisHostCollapseElement;
         new (): HTMLGwfVisHostCollapseElement;
     };
+    interface HTMLGwfVisHostMainItemContainerElement extends Components.GwfVisHostMainItemContainer, HTMLStencilElement {
+    }
+    var HTMLGwfVisHostMainItemContainerElement: {
+        prototype: HTMLGwfVisHostMainItemContainerElement;
+        new (): HTMLGwfVisHostMainItemContainerElement;
+    };
     interface HTMLGwfVisHostSidebarElement extends Components.GwfVisHostSidebar, HTMLStencilElement {
     }
     var HTMLGwfVisHostSidebarElement: {
@@ -53,6 +62,7 @@ declare global {
     interface HTMLElementTagNameMap {
         "gwf-vis-host": HTMLGwfVisHostElement;
         "gwf-vis-host-collapse": HTMLGwfVisHostCollapseElement;
+        "gwf-vis-host-main-item-container": HTMLGwfVisHostMainItemContainerElement;
         "gwf-vis-host-sidebar": HTMLGwfVisHostSidebarElement;
         "gwf-vis-host-sidebar-item-container": HTMLGwfVisHostSidebarItemContainerElement;
     }
@@ -66,6 +76,9 @@ declare namespace LocalJSX {
     interface GwfVisHostCollapse {
         "collapsed"?: boolean;
     }
+    interface GwfVisHostMainItemContainer {
+        "header"?: string;
+    }
     interface GwfVisHostSidebar {
         "active"?: boolean;
         "visHost"?: GwfVisHost;
@@ -77,6 +90,7 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "gwf-vis-host": GwfVisHost;
         "gwf-vis-host-collapse": GwfVisHostCollapse;
+        "gwf-vis-host-main-item-container": GwfVisHostMainItemContainer;
         "gwf-vis-host-sidebar": GwfVisHostSidebar;
         "gwf-vis-host-sidebar-item-container": GwfVisHostSidebarItemContainer;
     }
@@ -87,6 +101,7 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "gwf-vis-host": LocalJSX.GwfVisHost & JSXBase.HTMLAttributes<HTMLGwfVisHostElement>;
             "gwf-vis-host-collapse": LocalJSX.GwfVisHostCollapse & JSXBase.HTMLAttributes<HTMLGwfVisHostCollapseElement>;
+            "gwf-vis-host-main-item-container": LocalJSX.GwfVisHostMainItemContainer & JSXBase.HTMLAttributes<HTMLGwfVisHostMainItemContainerElement>;
             "gwf-vis-host-sidebar": LocalJSX.GwfVisHostSidebar & JSXBase.HTMLAttributes<HTMLGwfVisHostSidebarElement>;
             "gwf-vis-host-sidebar-item-container": LocalJSX.GwfVisHostSidebarItemContainer & JSXBase.HTMLAttributes<HTMLGwfVisHostSidebarItemContainerElement>;
         }

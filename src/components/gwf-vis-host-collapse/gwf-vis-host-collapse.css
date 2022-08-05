@@ -5,7 +5,6 @@
 [part='content'] {
   box-sizing: border-box;
   overflow: hidden;
-  padding: var(--leaflet-control-margin);
 }
 
 #collapse-toggle:checked ~ [part='content'] {
@@ -16,7 +15,6 @@
 [part='header'] {
   display: block;
   cursor: pointer;
-  padding: var(--leaflet-control-margin);
 }
 
 [part='header']::before {

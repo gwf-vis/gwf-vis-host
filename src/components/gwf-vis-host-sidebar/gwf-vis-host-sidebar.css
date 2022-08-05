@@ -9,7 +9,7 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  width: 30rem;
+  width: var(--sidebar-width);
   transition: width 0.3s;
 }
 

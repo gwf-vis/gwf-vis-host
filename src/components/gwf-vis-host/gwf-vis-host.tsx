@@ -9,7 +9,7 @@ export type MapView = {
 
 export type PluginDefinition = {
   url: string;
-  for?: 'sidebar';
+  for?: 'sidebar' | 'main';
   slot?: string;
   props?: any;
 };
@@ -95,6 +95,19 @@ export class GwfVisHost implements ComponentInterface {
     this.addControlToMap(this.sidebar);
   }
 
+  private async initializeCustomControl(element: HTMLElement) {
+    const customControl = leaflet.Control.extend({
+      onAdd: () => {
+        element.classList.add('leaflet-control-layers');
+        this.stopEventPropagationToTheMapElement(element);
+        return element;
+      },
+    });
+    const customControlInstance = new customControl({ position: 'bottomright' });
+    // TODO may add the instance to a dict or map
+    this.addControlToMap(customControlInstance);
+  }
+
   private async loadPlugins() {
     this.pluginMap = new Map();
     for (const plugin of this.plugins) {
@@ -131,12 +144,22 @@ export class GwfVisHost implements ComponentInterface {
           break;
         case 'control':
           switch (plugin?.for) {
+            case 'main':
+              {
+                const itemContainerElement = document.createElement('gwf-vis-host-main-item-container');
+                itemContainerElement.header = await pluginInstance.obtainHeader();
+                itemContainerElement.append(pluginInstance);
+                await this.initializeCustomControl(itemContainerElement);
+              }
+              break;
             case 'sidebar':
-              const itemContainerElement = document.createElement('gwf-vis-host-sidebar-item-container');
-              itemContainerElement.header = await pluginInstance.obtainHeader();
-              itemContainerElement.pluginSlot = plugin.slot;
-              itemContainerElement.append(pluginInstance);
-              this.sidebarElement?.append(itemContainerElement);
+              {
+                const itemContainerElement = document.createElement('gwf-vis-host-sidebar-item-container');
+                itemContainerElement.header = await pluginInstance.obtainHeader();
+                itemContainerElement.pluginSlot = plugin.slot;
+                itemContainerElement.append(pluginInstance);
+                this.sidebarElement?.append(itemContainerElement);
+              }
               break;
           }
           break;

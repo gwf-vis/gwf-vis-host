@@ -1,9 +1,7 @@
 :host {
   display: block;
-}
-
-:host([plugin-slot='top']) {
-  margin: var(--leaflet-control-margin);
+  max-width: calc(100vw - var(--sidebar-width) - var(--leaflet-control-margin) * 2);
+  overflow: hidden;
 }
 
 [part='header'] {
@@ -14,12 +12,10 @@
 [part='content'] {
   background: var(--leaflet-control-inner-background);
   border: var(--leaflet-control-border);
-  border-radius: var(--leaflet-control-border-radius);
   box-shadow: var(--leaflet-control-box-shadow);
   max-width: 100%;
 }
 
-gwf-vis-host-collapse::part(header),
-gwf-vis-host-collapse::part(content) {
-  padding: var(--leaflet-control-margin);
+gwf-vis-host-collapse::part(header) {
+  margin: 0 0.25rem;
 }
