@@ -14,12 +14,14 @@ export class GwfVisHostSidebar implements ComponentInterface {
     return (
       <Host>
         <input
-          part="toggle"
+          id="toggle"
+          hidden
           type="checkbox"
           checked={this.active}
           title={this.active ? 'Hide Sidebar' : 'Show Sidebar'}
           onChange={({ currentTarget }) => (this.active = (currentTarget as HTMLInputElement).checked)}
         />
+        <label part="toggle" htmlFor="toggle"></label>
         <div part="container">
           <div style={{ overflow: 'auto', flex: '0 0 auto', maxHeight: '50%' }}>
             <slot name="top"></slot>

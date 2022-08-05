@@ -18,17 +18,28 @@
   position: absolute;
   appearance: none;
   top: 50%;
-  left: 100%;
+  left: calc(100% + var(--leaflet-control-margin));
   height: 2rem;
   width: 1rem;
   border: var(--leaflet-control-border);
   border-radius: var(--leaflet-control-border-radius);
   box-shadow: var(--leaflet-control-box-shadow);
   cursor: pointer;
-  background-color: rgb(255, 255, 255);
+  background-color: hsl(0, 0%, 100%);
+  transition-property: box-shadow, transform;
+  transition-duration: 0.3s;
 }
 
-[part='toggle']:not(:checked) ~ [part='container'] {
+[part='toggle']:hover {
+  transform: scale(1.5);
+  box-shadow: var(--leaflet-control-box-shadow-far);
+}
+
+[part='toggle']:active {
+  box-shadow: inset var(--leaflet-control-box-shadow-far);
+}
+
+#toggle:not(:checked) ~ [part='container'] {
   width: 0;
 }
 
@@ -41,6 +52,6 @@
   font-weight: bold;
 }
 
-[part='toggle']:not(:checked)::after {
+#toggle:not(:checked) ~ [part='toggle']::after {
   content: '>';
 }
