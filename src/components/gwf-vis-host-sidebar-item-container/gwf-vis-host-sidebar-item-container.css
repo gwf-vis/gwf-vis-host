@@ -19,7 +19,11 @@
   max-width: 100%;
 }
 
-gwf-vis-host-collapse::part(header),
+gwf-vis-host-collapse::part(header) {
+  padding: 0 var(--leaflet-control-margin);
+}
+
 gwf-vis-host-collapse:not([collapsed])::part(content) {
   padding: var(--leaflet-control-margin);
+  padding-top: 0;
 }
