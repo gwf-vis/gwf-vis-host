@@ -6,12 +6,18 @@ import { Component, Host, h, ComponentInterface, Prop } from '@stencil/core';
   shadow: true,
 })
 export class GwfVisHostCollapse implements ComponentInterface {
-  @Prop({ reflect: true }) collapsed: boolean;
+  @Prop({ reflect: true, mutable: true }) collapsed: boolean;
 
   render() {
     return (
       <Host>
-        <input id="collapse-toggle" type="checkbox" hidden checked={this.collapsed} />
+        <input
+          id="collapse-toggle"
+          type="checkbox"
+          hidden
+          checked={this.collapsed}
+          onChange={({ currentTarget }) => (this.collapsed = (currentTarget as HTMLInputElement).checked)}
+        />
         <label part="header" htmlFor="collapse-toggle">
           <slot name="header"></slot>
         </label>
