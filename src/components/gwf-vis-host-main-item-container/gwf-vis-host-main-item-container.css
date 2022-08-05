@@ -1,6 +1,7 @@
 :host {
   display: block;
-  max-width: calc(100vw - var(--sidebar-width) - var(--leaflet-control-margin) * 2);
+  max-height: 50vh;
+  max-width: calc(100vw - var(--sidebar-width) - var(--leaflet-control-margin) * 3 - 1.5rem);
   overflow: hidden;
 }
 
