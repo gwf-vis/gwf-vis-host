@@ -10,6 +10,7 @@ export type MapView = {
 
 export type PluginDefinition = {
   url: string;
+  for?: 'sidebar';
   slot?: string;
   props?: any;
 };
@@ -117,16 +118,20 @@ export class GwfVisHost implements ComponentInterface {
         globalInfoDict: this.globalInfoDict,
         updatingGlobalInfoDelegate: this.updateGlobalInfoDict,
       });
-      switch (pluginClass?.['__PLUGIN_FOR__']) {
+      switch (pluginClass?.['__PLUGIN_TYPE__']) {
         case 'layer':
           this.invisiblePluginContainer?.append(pluginInstance);
           break;
-        case 'sidebar':
-          const itemContainerElement = document.createElement('gwf-vis-host-sidebar-item-container');
-          itemContainerElement.header = await pluginInstance.obtainHeader();
-          itemContainerElement.pluginSlot = plugin.slot;
-          itemContainerElement.append(pluginInstance);
-          this.sidebarElement?.append(itemContainerElement);
+        case 'control':
+          switch (plugin?.for) {
+            case 'sidebar':
+              const itemContainerElement = document.createElement('gwf-vis-host-sidebar-item-container');
+              itemContainerElement.header = await pluginInstance.obtainHeader();
+              itemContainerElement.pluginSlot = plugin.slot;
+              itemContainerElement.append(pluginInstance);
+              this.sidebarElement?.append(itemContainerElement);
+              break;
+          }
           break;
       }
       this.pluginMap.set(plugin, { class: pluginClass, instance: pluginInstance });
