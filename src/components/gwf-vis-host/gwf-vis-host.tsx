@@ -129,7 +129,7 @@ export class GwfVisHost implements ComponentInterface {
           this.sidebarElement?.append(itemContainerElement);
           break;
       }
-      this.pluginMap.set(plugin.props, { class: pluginClass, instance: pluginInstance });
+      this.pluginMap.set(plugin, { class: pluginClass, instance: pluginInstance });
     } catch {
       console.warn('Plugin fails to be loaded.');
     }
