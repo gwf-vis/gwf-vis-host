@@ -1,4 +1,4 @@
-import { Component, Host, h, ComponentInterface, Prop, State } from '@stencil/core';
+import { Component, Host, h, ComponentInterface, Prop } from '@stencil/core';
 
 @Component({
   tag: 'gwf-vis-host-sidebar-item-container',
