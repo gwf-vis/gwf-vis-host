@@ -1,6 +1,5 @@
 import { Component, Host, h, ComponentInterface, Prop, Watch, State } from '@stencil/core';
 import leaflet from 'leaflet';
-import { fetchData } from './obtain-mock-data';
 
 export type MapView = {
   center: leaflet.LatLngExpression;
@@ -31,6 +30,7 @@ export class GwfVisHost implements ComponentInterface {
   private sidebar: leaflet.Control;
   private sidebarElement: HTMLGwfVisHostSidebarElement;
   private layerControl: leaflet.Control.Layers;
+  private dataPluginInstance: HTMLElement;
   private pluginMap: Map<PluginDefinition, { class: any; instance: HTMLElement }>;
   private globalInfoDict: GlobalInfoDict;
 
@@ -114,11 +114,18 @@ export class GwfVisHost implements ComponentInterface {
         leaflet,
         addingToMapDelegate: this.addLayer,
         removingFromMapDelegate: this.removeLayer,
-        fetchingDataDelegate: fetchData,
+        fetchingDataDelegate: this.fetchData,
         globalInfoDict: this.globalInfoDict,
         updatingGlobalInfoDelegate: this.updateGlobalInfoDict,
       });
       switch (pluginClass?.['__PLUGIN_TYPE__']) {
+        case 'data':
+          if (this.dataPluginInstance) {
+            alert('There could be only one "data plugin".');
+            throw new Error('There could be only one data plugin.');
+          } else {
+            this.dataPluginInstance = pluginInstance;
+          }
         case 'layer':
           this.invisiblePluginContainer?.append(pluginInstance);
           break;
@@ -135,8 +142,9 @@ export class GwfVisHost implements ComponentInterface {
           break;
       }
       this.pluginMap.set(plugin, { class: pluginClass, instance: pluginInstance });
-    } catch {
-      console.warn('Plugin fails to be loaded.');
+    } catch (e) {
+      alert('Plugin fails to be loaded.');
+      throw e;
     }
   }
 
@@ -196,5 +204,9 @@ export class GwfVisHost implements ComponentInterface {
   private updateGlobalInfoDict = (globalInfoDict: GlobalInfoDict) => {
     this.globalInfoDict = globalInfoDict;
     this.pluginMap.forEach(({ instance }) => ((instance as any).globalInfoDict = this.globalInfoDict));
+  };
+
+  private fetchData = async (query: any) => {
+    return await (this.dataPluginInstance as any)?.fetchData(query);
   };
 }
