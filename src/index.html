@@ -15,10 +15,12 @@
   <script>
     async function loadPlugins() {
       try {
-        const response = await fetch('/assets/plugins/plugins.json');
-        const plugins = await response.json();
+        const response = await fetch('/assets/test/config.json');
+        const config = await response.json();
         const visHost = document.querySelector('#vis-host');
-        visHost.plugins = plugins;
+        for ([key, value] of Object.entries(config)) {
+          visHost[key] = value;
+        }
       } catch {
         console.warn('Fail to load plugins.')
       }
