@@ -23,11 +23,13 @@ export class GwfVisHostSidebar implements ComponentInterface {
         />
         <label part="toggle" htmlFor="toggle"></label>
         <div part="container">
-          <div style={{ overflow: 'auto', flex: '0 0 auto', maxHeight: '50%' }}>
-            <slot name="top"></slot>
-          </div>
-          <div style={{ overflowY: 'auto', flex: '0 0 1' }}>
-            <slot></slot>
+          <div part="inner-container">
+            <div style={{ overflow: 'auto', flex: '0 0 auto', maxHeight: '50%' }}>
+              <slot name="top"></slot>
+            </div>
+            <div style={{ overflowY: 'auto', flex: '0 0 1' }}>
+              <slot></slot>
+            </div>
           </div>
         </div>
       </Host>

@@ -5,12 +5,18 @@
 }
 
 [part='container'] {
+  overflow: hidden;
+  height: 100%;
+  width: var(--sidebar-width);
+  transition: width 0.3s;
+}
+
+[part='inner-container'] {
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
   width: var(--sidebar-width);
-  transition: width 0.3s;
 }
 
 [part='toggle'] {
