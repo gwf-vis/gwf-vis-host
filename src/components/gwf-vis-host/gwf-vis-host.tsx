@@ -38,7 +38,7 @@ export class GwfVisHost implements ComponentInterface {
   @State() loadingActive = true;
 
   @Prop() plugins: PluginDefinition[];
-  @Prop() preferCanvas: boolean = true;
+  @Prop() preferCanvas: boolean = false;
 
   @Prop() view: MapView;
 
