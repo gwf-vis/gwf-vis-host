@@ -21,7 +21,7 @@ export class GwfVisHostSidebar implements ComponentInterface {
           title={this.active ? 'Hide Sidebar' : 'Show Sidebar'}
           onChange={({ currentTarget }) => (this.active = (currentTarget as HTMLInputElement).checked)}
         />
-        <label part="toggle" htmlFor="toggle"></label>
+        <label part="toggle" htmlFor="toggle" title={this.active ? 'Hide Sidebar' : 'Show Sidebar'}></label>
         <div part="container">
           <div part="inner-container">
             <div style={{ overflow: 'auto', flex: '0 0 auto', maxHeight: '50%' }}>
