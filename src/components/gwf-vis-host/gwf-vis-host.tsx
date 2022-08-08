@@ -31,7 +31,8 @@ export class GwfVisHost implements ComponentInterface {
   private sidebarElement: HTMLGwfVisHostSidebarElement;
   private layerControl: leaflet.Control.Layers;
   private dataPluginInstance: HTMLElement;
-  private pluginMap: Map<PluginDefinition, { class: any; instance: HTMLElement }>;
+  private pluginUrlAndModuleMap = new Map<string, any>();
+  private pluginMap = new Map<PluginDefinition, { class: any; instance: HTMLElement }>();
   private globalInfoDict: GlobalInfoDict;
 
   @State() loadingActive = true;
@@ -109,7 +110,6 @@ export class GwfVisHost implements ComponentInterface {
   }
 
   private async loadPlugins() {
-    this.pluginMap = new Map();
     for (const plugin of this.plugins) {
       await this.loadPlugin(plugin);
     }
@@ -117,7 +117,11 @@ export class GwfVisHost implements ComponentInterface {
 
   private async loadPlugin(plugin: PluginDefinition) {
     try {
-      const pluginModule = await import(plugin.url);
+      let pluginModule = this.pluginUrlAndModuleMap.get(plugin.url);
+      if (!pluginModule) {
+        pluginModule = await import(plugin.url);
+        this.pluginUrlAndModuleMap.set(plugin.url, pluginModule);
+      }
       const pluginClass = Object.values(pluginModule).find(something => something?.['__PLUGIN_TAG_NAME__']);
       const pluginTagName = pluginClass?.['__PLUGIN_TAG_NAME__'];
       this.definePlugin(pluginTagName, pluginClass as any);
