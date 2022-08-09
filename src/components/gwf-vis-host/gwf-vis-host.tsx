@@ -192,8 +192,16 @@ export class GwfVisHost implements ComponentInterface {
 
   private stopEventPropagationToTheMapElement(element: HTMLElement) {
     element.addEventListener('mouseover', () => {
-      this.map.dragging.disable();
+      if (!document.body.classList.contains('leaflet-dragging')) {
+        this.map.dragging.enable();
+      }
       this.map.scrollWheelZoom.disable();
+      this.map.doubleClickZoom.disable();
+    });
+    element.addEventListener('mouseup', () => {
+      if (this.map.dragging.enabled()) {
+        this.map.dragging.disable();
+      }
     });
     element.addEventListener('mouseout', () => {
       this.map.dragging.enable();
