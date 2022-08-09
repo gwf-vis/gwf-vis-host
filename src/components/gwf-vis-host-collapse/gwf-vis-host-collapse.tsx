@@ -18,11 +18,15 @@ export class GwfVisHostCollapse implements ComponentInterface {
           checked={this.collapsed}
           onChange={({ currentTarget }) => (this.collapsed = (currentTarget as HTMLInputElement).checked)}
         />
-        <label part="header" htmlFor="collapse-toggle">
-          <slot name="header"></slot>
+        <label part="header-container" htmlFor="collapse-toggle">
+          <div part="header">
+            <slot name="header"></slot>
+          </div>
         </label>
-        <div part="content">
-          <slot></slot>
+        <div part="content-container">
+          <div part="content">
+            <slot></slot>
+          </div>
         </div>
       </Host>
     );

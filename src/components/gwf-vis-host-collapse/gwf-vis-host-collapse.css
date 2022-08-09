@@ -2,24 +2,29 @@
   display: block;
 }
 
-[part='content'] {
+[part='content-container'] {
   box-sizing: border-box;
   overflow: hidden;
+  max-height: 100vh;
+  transition: max-height 0.3s;
 }
 
-#collapse-toggle:checked ~ [part='content'] {
-  height: 0;
-  padding: 0;
+#collapse-toggle:checked ~ [part='content-container'] {
+  max-height: 0;
 }
 
-[part='header'] {
+[part='header-container'] {
   display: block;
   cursor: pointer;
   transition: transform 0.3s;
 }
 
-[part='header']:hover {
-  transform: scale(0.95);
+[part='header-container']:hover {
+  backdrop-filter: contrast(.7);
+}
+
+[part='header-container']:active {
+  backdrop-filter: contrast(.5);
 }
 
 [part='header']::before {

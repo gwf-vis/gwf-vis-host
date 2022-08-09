@@ -20,10 +20,10 @@
 }
 
 gwf-vis-host-collapse::part(header) {
-  padding: 0 var(--leaflet-control-margin);
+  margin: 0 var(--leaflet-control-margin);
 }
 
-gwf-vis-host-collapse:not([collapsed])::part(content) {
-  padding: var(--leaflet-control-margin);
-  padding-top: 0;
+gwf-vis-host-collapse::part(content) {
+  margin: var(--leaflet-control-margin);
+  margin-top: 0;
 }
