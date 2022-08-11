@@ -8,15 +8,23 @@ export type MapView = {
 };
 
 export type PluginDefinition = {
-  url: string;
-  for?: 'sidebar' | 'main';
-  slot?: string;
+  name: string;
+  containerProps?: any;
   props?: any;
+};
+
+export type PluginDefinitions = {
+  data: PluginDefinition;
+  hidden?: PluginDefinition[];
+  sidebar?: PluginDefinition[];
+  main?: PluginDefinition[];
 };
 
 export type GlobalInfoDict = {
   [key: string]: any;
 };
+
+export type PluginType = 'data' | 'hidden' | 'sidebar' | 'main';
 
 @Component({
   tag: 'gwf-vis-host',
@@ -31,13 +39,14 @@ export class GwfVisHost implements ComponentInterface {
   private sidebarElement: HTMLGwfVisHostSidebarElement;
   private layerControl: leaflet.Control.Layers;
   private dataPluginInstance: HTMLElement;
-  private pluginUrlAndModuleMap = new Map<string, any>();
-  private pluginMap = new Map<PluginDefinition, { class: any; instance: HTMLElement }>();
+  private pluginNameAndClassMap = new Map<string, any>();
+  private pluginDefinitionAndInstanceMap = new Map<PluginDefinition, HTMLElement>();
   private globalInfoDict: GlobalInfoDict;
 
   @State() loadingActive = true;
 
-  @Prop() plugins: PluginDefinition[];
+  @Prop() imports: { [name: string]: string };
+  @Prop() plugins: PluginDefinitions;
   @Prop() preferCanvas: boolean = false;
 
   @Prop() view: MapView;
@@ -88,7 +97,6 @@ export class GwfVisHost implements ComponentInterface {
         this.sidebarElement = leaflet.DomUtil.create('gwf-vis-host-sidebar');
         this.sidebarElement.classList.add('leaflet-control-layers');
         this.stopEventPropagationToTheMapElement(this.sidebarElement);
-        this.sidebarElement.visHost = this;
         return this.sidebarElement;
       },
     });
@@ -110,69 +118,89 @@ export class GwfVisHost implements ComponentInterface {
   }
 
   private async loadPlugins() {
-    for (const plugin of this.plugins) {
-      await this.loadPlugin(plugin);
+    try {
+      await this.importPlugins();
+      if (!this.plugins?.data) {
+        throw new Error('You must define a data plugin.');
+      }
+      await this.loadPlugin('data', this.plugins.data);
+      for (const plugin of this.plugins.hidden || []) {
+        await this.loadPlugin('hidden', plugin);
+      }
+      for (const plugin of this.plugins.main || []) {
+        await this.loadPlugin('main', plugin);
+      }
+      for (const plugin of this.plugins.sidebar || []) {
+        await this.loadPlugin('sidebar', plugin);
+      }
+    } catch (e) {
+      alert(e?.message ?? 'Fail to load the plugins.');
+      throw e;
     }
   }
 
-  private async loadPlugin(plugin: PluginDefinition) {
+  private async importPlugins() {
     try {
-      let pluginModule = this.pluginUrlAndModuleMap.get(plugin.url);
-      if (!pluginModule) {
-        pluginModule = await import(plugin.url);
-        this.pluginUrlAndModuleMap.set(plugin.url, pluginModule);
+      for (const [name, url] of Object.entries(this.imports || {})) {
+        const pluginModule = await import(url);
+        // TODO may find a better way to find the exported class we want
+        const pluginClass = Object.values(pluginModule).find(something => something?.['__PLUGIN_TAG_NAME__']);
+        const pluginTagName = pluginClass?.['__PLUGIN_TAG_NAME__'];
+        if (!pluginTagName) {
+          throw new Error('Fail to find the plugin class.');
+        }
+        this.definePlugin(pluginTagName, pluginClass as CustomElementConstructor);
+        if (!customElements.get(pluginTagName)) {
+          throw new Error('Fail to register the plugin.');
+        }
+        this.pluginNameAndClassMap.set(name, pluginClass);
       }
-      const pluginClass = Object.values(pluginModule).find(something => something?.['__PLUGIN_TAG_NAME__']);
-      const pluginTagName = pluginClass?.['__PLUGIN_TAG_NAME__'];
-      this.definePlugin(pluginTagName, pluginClass as any);
-      const pluginInstance = document.createElement(pluginTagName);
-      this.assignProps(pluginInstance, {
-        ...plugin.props,
-        leaflet,
-        addingToMapDelegate: this.addLayer,
-        removingFromMapDelegate: this.removeLayer,
-        fetchingDataDelegate: this.fetchData,
-        globalInfoDict: this.globalInfoDict,
-        updatingGlobalInfoDelegate: this.updateGlobalInfoDict,
-      });
-      switch (pluginClass?.['__PLUGIN_TYPE__']) {
-        case 'data':
-          if (this.dataPluginInstance) {
-            alert('There could be only one "data plugin".');
-            throw new Error('There could be only one data plugin.');
-          } else {
-            this.dataPluginInstance = pluginInstance;
-          }
-        case 'layer':
-          this.invisiblePluginContainer?.append(pluginInstance);
-          break;
-        case 'control':
-          switch (plugin?.for) {
-            case 'main':
-              {
-                const itemContainerElement = document.createElement('gwf-vis-host-main-item-container');
-                itemContainerElement.header = await pluginInstance.obtainHeader();
-                itemContainerElement.append(pluginInstance);
-                await this.initializeCustomControl(itemContainerElement);
-              }
-              break;
-            case 'sidebar':
-              {
-                const itemContainerElement = document.createElement('gwf-vis-host-sidebar-item-container');
-                itemContainerElement.header = await pluginInstance.obtainHeader();
-                itemContainerElement.pluginSlot = plugin.slot;
-                itemContainerElement.append(pluginInstance);
-                this.sidebarElement?.append(itemContainerElement);
-              }
-              break;
-          }
-          break;
-      }
-      this.pluginMap.set(plugin, { class: pluginClass, instance: pluginInstance });
     } catch (e) {
-      alert('Plugin fails to be loaded.');
+      alert(e?.message ?? 'Fail to import the plugins.');
       throw e;
     }
+  }
+
+  private async loadPlugin(type: PluginType, plugin: PluginDefinition) {
+    const pluginInstance = await this.createPluginInstance(plugin);
+    switch (type) {
+      case 'data':
+        this.dataPluginInstance = pluginInstance;
+      case 'hidden':
+        this.invisiblePluginContainer?.append(pluginInstance);
+        break;
+      case 'main': {
+        const itemContainerElement = document.createElement('gwf-vis-host-main-item-container');
+        itemContainerElement.header = await pluginInstance?.['obtainHeader']?.();
+        itemContainerElement.append(pluginInstance);
+        await this.initializeCustomControl(itemContainerElement);
+        break;
+      }
+      case 'sidebar': {
+        const itemContainerElement = document.createElement('gwf-vis-host-sidebar-item-container');
+        itemContainerElement.header = await pluginInstance?.['obtainHeader']?.();
+        itemContainerElement.containerProps = plugin?.['containerProps'];
+        itemContainerElement.append(pluginInstance);
+        this.sidebarElement?.append(itemContainerElement);
+        break;
+      }
+    }
+    this.pluginDefinitionAndInstanceMap.set(plugin, pluginInstance);
+  }
+
+  private async createPluginInstance(plugin: PluginDefinition) {
+    const pluginTagName = this.pluginNameAndClassMap?.get(plugin?.name)?.['__PLUGIN_TAG_NAME__'];
+    const pluginInstance = document.createElement(pluginTagName);
+    this.assignProps(pluginInstance, {
+      ...plugin.props,
+      leaflet,
+      addingToMapDelegate: this.addLayer,
+      removingFromMapDelegate: this.removeLayer,
+      fetchingDataDelegate: this.fetchData,
+      globalInfoDict: this.globalInfoDict,
+      updatingGlobalInfoDelegate: this.updateGlobalInfoDict,
+    });
+    return pluginInstance;
   }
 
   private async initializeLayerControl() {
@@ -238,7 +266,7 @@ export class GwfVisHost implements ComponentInterface {
 
   private updateGlobalInfoDict = (globalInfoDict: GlobalInfoDict) => {
     this.globalInfoDict = globalInfoDict;
-    this.pluginMap.forEach(({ instance }) => ((instance as any).globalInfoDict = this.globalInfoDict));
+    this.pluginDefinitionAndInstanceMap.forEach(instance => ((instance as any).globalInfoDict = this.globalInfoDict));
   };
 
   private fetchData = async (query: any) => {

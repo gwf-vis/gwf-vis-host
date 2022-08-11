@@ -7,15 +7,19 @@ import { Component, Host, h, ComponentInterface, Prop } from '@stencil/core';
 })
 export class GwfVisHostSidebarItemContainer implements ComponentInterface {
   @Prop() header: string;
-  @Prop({ reflect: true }) pluginSlot: string;
+  @Prop() containerProps?: { slot?: string };
 
   render() {
-    return <Host slot={this.pluginSlot}>{this.pluginSlot === 'top' ? this.renderContent() : <gwf-vis-host-collapse>{this.renderContent()}</gwf-vis-host-collapse>}</Host>;
+    return (
+      <Host slot={this.containerProps?.slot}>
+        {this.containerProps?.slot === 'top' ? this.renderContent() : <gwf-vis-host-collapse>{this.renderContent()}</gwf-vis-host-collapse>}
+      </Host>
+    );
   }
 
   private renderContent() {
     return [
-      <div part="header" slot={this.pluginSlot === 'top' ? '' : 'header'} innerHTML={this.header}></div>,
+      <div part="header" slot={this.containerProps?.slot === 'top' ? '' : 'header'} innerHTML={this.header}></div>,
       <div part="content">
         <slot></slot>
       </div>,

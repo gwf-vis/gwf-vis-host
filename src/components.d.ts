@@ -5,11 +5,11 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { MapView, PluginDefinition } from "./components/gwf-vis-host/gwf-vis-host";
-import { GwfVisHost } from "./components/gwf-vis-host/gwf-vis-host";
+import { MapView, PluginDefinitions } from "./components/gwf-vis-host/gwf-vis-host";
 export namespace Components {
     interface GwfVisHost {
-        "plugins": PluginDefinition[];
+        "imports": { [name: string]: string };
+        "plugins": PluginDefinitions;
         "preferCanvas": boolean;
         "view": MapView;
     }
@@ -21,11 +21,10 @@ export namespace Components {
     }
     interface GwfVisHostSidebar {
         "active": boolean;
-        "visHost": GwfVisHost;
     }
     interface GwfVisHostSidebarItemContainer {
+        "containerProps"?: { slot?: string };
         "header": string;
-        "pluginSlot": string;
     }
 }
 declare global {
@@ -69,7 +68,8 @@ declare global {
 }
 declare namespace LocalJSX {
     interface GwfVisHost {
-        "plugins"?: PluginDefinition[];
+        "imports"?: { [name: string]: string };
+        "plugins"?: PluginDefinitions;
         "preferCanvas"?: boolean;
         "view"?: MapView;
     }
@@ -81,11 +81,10 @@ declare namespace LocalJSX {
     }
     interface GwfVisHostSidebar {
         "active"?: boolean;
-        "visHost"?: GwfVisHost;
     }
     interface GwfVisHostSidebarItemContainer {
+        "containerProps"?: { slot?: string };
         "header"?: string;
-        "pluginSlot"?: string;
     }
     interface IntrinsicElements {
         "gwf-vis-host": GwfVisHost;

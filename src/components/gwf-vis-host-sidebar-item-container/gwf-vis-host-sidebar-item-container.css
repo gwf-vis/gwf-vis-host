@@ -2,7 +2,7 @@
   display: block;
 }
 
-:host([plugin-slot='top']) {
+:host([slot='top']) {
   margin: var(--leaflet-control-margin);
 }
 
