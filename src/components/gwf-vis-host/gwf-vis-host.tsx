@@ -20,7 +20,7 @@ export type PluginDefinitions = {
   main?: PluginDefinition[];
 };
 
-export type GlobalInfoDict = {
+export type GlobalInfo = {
   [key: string]: any;
 };
 
@@ -41,7 +41,7 @@ export class GwfVisHost implements ComponentInterface {
   private dataPluginInstance: HTMLElement;
   private pluginNameAndClassMap = new Map<string, any>();
   private pluginDefinitionAndInstanceMap = new Map<PluginDefinition, HTMLElement>();
-  private globalInfoDict: GlobalInfoDict;
+  private globalInfo: GlobalInfo;
 
   @State() loadingActive = true;
 
@@ -194,11 +194,11 @@ export class GwfVisHost implements ComponentInterface {
     this.assignProps(pluginInstance, {
       ...plugin.props,
       leaflet,
-      addingToMapDelegate: this.addLayer,
-      removingFromMapDelegate: this.removeLayer,
-      fetchingDataDelegate: this.fetchData,
-      globalInfoDict: this.globalInfoDict,
-      updatingGlobalInfoDelegate: this.updateGlobalInfoDict,
+      delegateOfFetchingData: this.fetchData,
+      delegateOfUpdatingGlobalInfo: this.updateGlobalInfo,
+      delegateOfAddingToMap: this.addLayer,
+      delegateOfRemovingFromMap: this.removeLayer,
+      globalInfoDict: this.globalInfo,
     });
     return pluginInstance;
   }
@@ -264,9 +264,9 @@ export class GwfVisHost implements ComponentInterface {
     }
   };
 
-  private updateGlobalInfoDict = (globalInfoDict: GlobalInfoDict) => {
-    this.globalInfoDict = globalInfoDict;
-    this.pluginDefinitionAndInstanceMap.forEach(instance => ((instance as any).globalInfoDict = this.globalInfoDict));
+  private updateGlobalInfo = (globalInfo: GlobalInfo) => {
+    this.globalInfo = globalInfo;
+    this.pluginDefinitionAndInstanceMap.forEach(instance => ((instance as any).globalInfo = this.globalInfo));
   };
 
   private fetchData = async (query: any) => {
