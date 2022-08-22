@@ -8,7 +8,7 @@ export type MapView = {
 };
 
 export type PluginDefinition = {
-  name: string;
+  import: string;
   containerProps?: any;
   props?: any;
 };
@@ -189,7 +189,7 @@ export class GwfVisHost implements ComponentInterface {
   }
 
   private async createPluginInstance(plugin: PluginDefinition) {
-    const pluginTagName = this.pluginNameAndClassMap?.get(plugin?.name)?.['__PLUGIN_TAG_NAME__'];
+    const pluginTagName = this.pluginNameAndClassMap?.get(plugin?.import)?.['__PLUGIN_TAG_NAME__'];
     const pluginInstance = document.createElement(pluginTagName);
     this.assignProps(pluginInstance, {
       ...plugin.props,
