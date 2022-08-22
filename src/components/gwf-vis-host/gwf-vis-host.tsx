@@ -45,6 +45,7 @@ export class GwfVisHost implements ComponentInterface {
 
   @State() loadingActive = true;
 
+  @Prop() serverFileApiBasePath: string;
   @Prop() imports: { [name: string]: string };
   @Prop() plugins: PluginDefinitions;
   @Prop() preferCanvas: boolean = false;
@@ -142,7 +143,8 @@ export class GwfVisHost implements ComponentInterface {
   private async importPlugins() {
     try {
       for (const [name, url] of Object.entries(this.imports || {})) {
-        const pluginModule = await import(url);
+        const actualUrl = url?.startsWith('@') ? url.replace('@', this.serverFileApiBasePath) : url;
+        const pluginModule = await import(actualUrl);
         // TODO may find a better way to find the exported class we want
         const pluginClass = Object.values(pluginModule).find(something => something?.['__PLUGIN_TAG_NAME__']);
         const pluginTagName = pluginClass?.['__PLUGIN_TAG_NAME__'];
