@@ -7,10 +7,11 @@ import { Component, Host, h, ComponentInterface, Prop } from '@stencil/core';
 })
 export class GwfVisHostMainItemContainer implements ComponentInterface {
   @Prop() header: string;
+  @Prop() containerProps?: { width?: string };
 
   render() {
     return (
-      <Host>
+      <Host style={{ width: this.containerProps?.width }}>
         <gwf-vis-host-collapse>
           <div part="header" slot="header" innerHTML={this.header}></div>
           <div part="content">

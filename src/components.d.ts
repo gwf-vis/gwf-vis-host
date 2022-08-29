@@ -11,12 +11,14 @@ export namespace Components {
         "imports": { [name: string]: string };
         "plugins": PluginDefinitions;
         "preferCanvas": boolean;
+        "serverFileApiBasePath": string;
         "view": MapView;
     }
     interface GwfVisHostCollapse {
         "collapsed": boolean;
     }
     interface GwfVisHostMainItemContainer {
+        "containerProps"?: { width?: string };
         "header": string;
     }
     interface GwfVisHostSidebar {
@@ -71,12 +73,14 @@ declare namespace LocalJSX {
         "imports"?: { [name: string]: string };
         "plugins"?: PluginDefinitions;
         "preferCanvas"?: boolean;
+        "serverFileApiBasePath"?: string;
         "view"?: MapView;
     }
     interface GwfVisHostCollapse {
         "collapsed"?: boolean;
     }
     interface GwfVisHostMainItemContainer {
+        "containerProps"?: { width?: string };
         "header"?: string;
     }
     interface GwfVisHostSidebar {

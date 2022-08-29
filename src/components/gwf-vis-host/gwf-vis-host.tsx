@@ -174,6 +174,7 @@ export class GwfVisHost implements ComponentInterface {
       case 'main': {
         const itemContainerElement = document.createElement('gwf-vis-host-main-item-container');
         itemContainerElement.header = await pluginInstance?.['obtainHeader']?.();
+        itemContainerElement.containerProps = plugin?.['containerProps'];
         itemContainerElement.append(pluginInstance);
         await this.initializeCustomControl(itemContainerElement);
         break;
