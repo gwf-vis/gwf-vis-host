@@ -197,6 +197,7 @@ export class GwfVisHost implements ComponentInterface {
     this.assignProps(pluginInstance, {
       ...plugin.props,
       leaflet,
+      mapInstance: this.map,
       delegateOfFetchingData: this.fetchData,
       delegateOfUpdatingGlobalInfo: this.updateGlobalInfo,
       delegateOfAddingToMap: this.addLayer,
