@@ -47,7 +47,7 @@ export class GwfVisHost implements ComponentInterface {
 
   @Prop() serverFileApiBasePath: string;
   @Prop() imports: { [name: string]: string };
-  @Prop() customVariables: { name: string; rawVariables: string[]; handlerString: string }[];
+  @Prop() customVariables: { [name: string]: { rawVariables: string[]; handlerString: string } };
   @Prop() plugins: PluginDefinitions;
   @Prop() preferCanvas: boolean = false;
 
