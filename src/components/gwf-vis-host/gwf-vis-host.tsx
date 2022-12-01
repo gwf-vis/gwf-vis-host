@@ -47,6 +47,7 @@ export class GwfVisHost implements ComponentInterface {
 
   @Prop() serverFileApiBasePath: string;
   @Prop() imports: { [name: string]: string };
+  @Prop() customVariables: { name: string; rawVariables: string[]; handlerString: string }[];
   @Prop() plugins: PluginDefinitions;
   @Prop() preferCanvas: boolean = false;
 
@@ -197,6 +198,7 @@ export class GwfVisHost implements ComponentInterface {
     this.assignProps(pluginInstance, {
       ...plugin.props,
       leaflet,
+      customVariables: this.customVariables,
       mapInstance: this.map,
       delegateOfFetchingData: this.fetchData,
       delegateOfUpdatingGlobalInfo: this.updateGlobalInfo,
