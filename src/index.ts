@@ -1,1 +1,1 @@
-export * from "./gwf-vis-host";
+export * from "./gwf-vis-host/gwf-vis-host";
