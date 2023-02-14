@@ -3,9 +3,9 @@ import { customElement, property } from "lit/decorators.js";
 import { ref } from "lit/directives/ref.js";
 import leaflet from "leaflet";
 
-import { MapView } from "../utils/basic";
+import { MapView } from "../../utils/basic";
 import styles from "./gwf-vis-host.css?inline";
-import leafletStyles from "../../node_modules/leaflet/dist/leaflet.css?inline";
+import leafletStyles from "../../../node_modules/leaflet/dist/leaflet.css?inline";
 
 @customElement("gwf-vis-host")
 export default class GwfVisHost extends LitElement {
