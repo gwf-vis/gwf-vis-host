@@ -9,6 +9,7 @@
   height: 100%;
   width: var(--sidebar-width);
   transition: width 0.3s;
+  border-radius: inherit;
 }
 
 [part="inner-container"] {
