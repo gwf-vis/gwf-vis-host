@@ -31,14 +31,7 @@ export default class GwfVisHostSidebar extends LitElement {
             <slot name="top"></slot>
           </div>
           <div style="overflow-y: auto; ">
-            <slot>
-              <!-- TODO to be removed -->
-              <gwf-vis-host-sidebar-item-container header="Wooo">
-                <div
-                  style="height: 30rem; width: 100%; background: bisque;"
-                ></div>
-              </gwf-vis-host-sidebar-item-container>
-            </slot>
+            <slot></slot>
           </div>
         </div>
       </div>

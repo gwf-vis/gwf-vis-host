@@ -1,6 +1,6 @@
 import type leaflet from "leaflet";
 
-export type PluginType = "data" | "hidden" | "sidebar" | "main";
+export type PluginContainer = "hidden" | "sidebar" | "main";
 
 export type MapView = {
   center: leaflet.LatLngExpression;

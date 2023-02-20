@@ -7,7 +7,7 @@ import styles from "./gwf-vis-host-collapse.css?inline";
 export default class GwfVisHostCollapse extends LitElement {
   static styles = [css([styles] as any)];
 
-  @property({ type: Boolean, reflect: true }) collapsed: boolean = true;
+  @property({ type: Boolean, reflect: true }) collapsed: boolean = false;
 
   render() {
     return html`

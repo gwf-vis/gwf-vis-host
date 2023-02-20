@@ -1,38 +1,86 @@
 import { css, html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ref } from "lit/directives/ref.js";
+import { customElement, property, state } from "lit/decorators.js";
+import { ref, createRef } from "lit/directives/ref.js";
+import { when } from "lit/directives/when.js";
 import leaflet from "leaflet";
 
 import { MapView } from "../../utils/basic";
 import GwfVisHostSidebar from "../gwf-vis-host-sidebar/gwf-vis-host-sidebar";
 import styles from "./gwf-vis-host.css?inline";
 import leafletStyles from "../../../node_modules/leaflet/dist/leaflet.css?inline";
+import { obtainActualUrl } from "../../utils/url";
+import importPlugin, {
+  pluginNameAndTagNameMap,
+} from "../../utils/import-plugin";
+import {
+  GwfVisHostConfig,
+  PluginDefinition,
+} from "../../utils/gwf-vis-host-config";
+import GwfVisHostMainItemContainer from "../gwf-vis-host-main-item-container/gwf-vis-host-main-item-container";
+import GwfVisHostSidebarItemContainer from "../gwf-vis-host-sidebar-item-container/gwf-vis-host-sidebar-item-container";
+import {
+  GwfVisPlugin,
+  GwfVisPluginProps,
+  GwfVisPluginWithSharedStates,
+  LayerType,
+  SharedStates,
+} from "../../utils/plugin";
 
 @customElement("gwf-vis-host")
-export default class GwfVisHost extends LitElement {
+export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
   static styles = [css([leafletStyles] as any), css([styles] as any)];
 
   private map?: leaflet.Map;
   private layerControl?: leaflet.Control.Layers;
   private sidebar?: leaflet.Control;
+  private mapElementRef = createRef<HTMLDivElement>();
   private sidebarElement?: GwfVisHostSidebar;
+  private hiddenPluginContainerRef = createRef<HTMLDivElement>();
+  private pluginDefinitionAndInstanceMap = new Map<
+    PluginDefinition,
+    GwfVisPlugin
+  >();
+  private pluginLoadingPool: boolean[] = [];
+  private pluginSharedStates: SharedStates = {};
+
+  @state() loadingActive: boolean = true;
 
   @property() preferCanvas: boolean = false;
   @property() view?: MapView;
+  @property() fileBasePath: string = ".";
+  @property() imports?: { [name: string]: string };
+  @property() plugins?: PluginDefinition[];
+
+  firstUpdated() {
+    this.initializeVis();
+  }
 
   render() {
     return html`
+      <div id="map" ${ref(this.mapElementRef)}></div>
       <div
-        id="map"
-        ${ref((el) => this.initializeVis(el as HTMLDivElement))}
+        id="invisible-plugin-container"
+        hidden
+        ${ref(this.hiddenPluginContainerRef)}
       ></div>
+      ${when(
+        this.loadingActive,
+        () => html`
+          <div id="loading">
+            <div class="leaflet-control leaflet-control-layers">Loading...</div>
+          </div>
+        `
+      )}
     `;
   }
 
-  private initializeVis(mapElement?: HTMLElement) {
-    if (!this.map && mapElement) {
-      this.initializeMap(mapElement);
+  private async initializeVis() {
+    if (!this.map && this.mapElementRef.value) {
+      this.initializeMap(this.mapElementRef.value);
       this.initializeSidebar();
+      await this.importPlugins();
+      this.loadPlugins();
+      this.loadingActive = false;
     }
   }
 
@@ -59,10 +107,112 @@ export default class GwfVisHost extends LitElement {
     this.map?.addControl(this.sidebar);
   }
 
+  private initializeMainContainerControl(element: HTMLElement) {
+    const customControl = leaflet.Control.extend({
+      onAdd: () => {
+        element.classList.add("leaflet-control-layers");
+        this.stopEventPropagationToTheMapElement(element);
+        return element;
+      },
+    });
+    const customControlInstance = new customControl({
+      position: "bottomright",
+    });
+    // TODO may add the instance to a dict or map
+    this.map?.addControl(customControlInstance);
+  }
+
   private initializeLayerControl() {
     this.layerControl?.remove();
     this.layerControl = leaflet.control.layers();
     this.map?.addControl(this.layerControl);
+  }
+
+  private loadPlugins() {
+    try {
+      for (const pluginDefinition of this.plugins ?? []) {
+        this.loadPlugin(pluginDefinition);
+      }
+    } catch (e: any) {
+      alert(e?.message ?? "Fail to load the plugins.");
+      throw e;
+    }
+  }
+
+  private loadPlugin(pluginDefinition: PluginDefinition) {
+    const pluginInstance = this.createPluginInstance(pluginDefinition);
+    if (pluginInstance) {
+      this.assignPluginInstanceIntoContainer(pluginDefinition, pluginInstance);
+      this.pluginDefinitionAndInstanceMap.set(pluginDefinition, pluginInstance);
+    }
+  }
+
+  private assignPluginInstanceIntoContainer(
+    pluginDefinition: PluginDefinition,
+    pluginInstance: GwfVisPlugin
+  ) {
+    switch (pluginDefinition.container) {
+      case "hidden": {
+        this.hiddenPluginContainerRef.value?.append(pluginInstance);
+        break;
+      }
+      case "main": {
+        const itemContainerElement = document.createElement(
+          "gwf-vis-host-main-item-container"
+        ) as GwfVisHostMainItemContainer;
+        itemContainerElement.header = pluginInstance.obtainHeader();
+        itemContainerElement.containerProps = pluginDefinition.containerProps;
+        itemContainerElement.append(pluginInstance);
+        this.initializeMainContainerControl(itemContainerElement);
+        break;
+      }
+      case "sidebar": {
+        const itemContainerElement = document.createElement(
+          "gwf-vis-host-sidebar-item-container"
+        ) as GwfVisHostSidebarItemContainer;
+        itemContainerElement.header = pluginInstance.obtainHeader();
+        itemContainerElement.containerProps = pluginDefinition.containerProps;
+        itemContainerElement.append(pluginInstance);
+        this.sidebarElement?.append(itemContainerElement);
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  private createPluginInstance(pluginDefinition: PluginDefinition) {
+    const pluginTagName = pluginNameAndTagNameMap.get(pluginDefinition.import);
+    if (pluginTagName) {
+      const pluginInstance = document.createElement(
+        pluginTagName
+      ) as GwfVisPlugin;
+      const propsToBeSet = {
+        ...pluginDefinition.props,
+        notifyLoadingCallback: this.notifyPluginLoadingHandler,
+        sharedStates: this.pluginSharedStates,
+        updateSharedStatesCallback: this.updatePluginSharedStatesHandler,
+        leaflet,
+        mapInstance: this.map,
+        addMapLayerCallback: this.addMapLayerHandler,
+        removeMapLayerCallback: this.removeMapLayerHandler,
+      } as GwfVisPluginProps;
+      Object.assign(pluginInstance, propsToBeSet);
+      return pluginInstance;
+    }
+    return undefined;
+  }
+
+  private async importPlugins() {
+    try {
+      for (const [name, url] of Object.entries(this.imports ?? {})) {
+        const actualUrl = obtainActualUrl(url, this.fileBasePath);
+        await importPlugin(name, actualUrl);
+      }
+    } catch (e: any) {
+      alert(e?.message ?? "Fail to import the plugins.");
+      throw e;
+    }
   }
 
   private updateView(view?: MapView) {
@@ -87,4 +237,64 @@ export default class GwfVisHost extends LitElement {
       this.map?.scrollWheelZoom.enable();
     });
   }
+
+  private updateLoadingStatus() {
+    if (this.pluginLoadingPool.some((item) => item)) {
+      this.loadingActive = true;
+    } else {
+      this.loadingActive = false;
+    }
+  }
+
+  private notifyPluginLoadingHandler = () => {
+    let index = this.pluginLoadingPool.findIndex(
+      (item) => typeof item === "undefined"
+    );
+    if (index < 0) {
+      index = this.pluginLoadingPool.length;
+    }
+    this.pluginLoadingPool[index] = true;
+    this.updateLoadingStatus();
+    return () => {
+      delete this.pluginLoadingPool[index];
+      this.updateLoadingStatus();
+    };
+  };
+
+  private updatePluginSharedStatesHandler = (sharedStates: SharedStates) => {
+    this.pluginSharedStates = sharedStates;
+    for (let pluginInstance of this.pluginDefinitionAndInstanceMap.values() ??
+      []) {
+      (pluginInstance as GwfVisPluginWithSharedStates).sharedStates =
+        this.pluginSharedStates;
+    }
+  };
+
+  private addMapLayerHandler = (
+    layer: leaflet.Layer,
+    name: string,
+    type: LayerType,
+    active: boolean = false
+  ) => {
+    if (this.layerControl) {
+      switch (type) {
+        case "base-layer":
+          this.layerControl.addBaseLayer(layer, name);
+          break;
+        case "overlay":
+          this.layerControl.addOverlay(layer, name);
+          break;
+      }
+    }
+    if (active) {
+      this.map?.addLayer(layer);
+    }
+  };
+
+  private removeMapLayerHandler = (layer: leaflet.Layer) => {
+    if (layer) {
+      this.layerControl?.removeLayer(layer);
+      layer.remove();
+    }
+  };
 }

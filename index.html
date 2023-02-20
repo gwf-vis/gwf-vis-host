@@ -12,5 +12,15 @@
 
   <body>
     <gwf-vis-host></gwf-vis-host>
+    <script>
+      async function main() {
+        const visHost = document.querySelector("gwf-vis-host");
+        const config = await fetch("./src/assets/sample.json").then((response) =>
+          response.json()
+        );
+        Object.assign(visHost, config);
+      }
+      main();
+    </script>
   </body>
 </html>
