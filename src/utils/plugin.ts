@@ -67,14 +67,14 @@ export interface GwfVisMapPlugin extends GwfVisPlugin {
   removeMapLayerCallback: (layer: leaflet.Layer) => void;
 }
 
-export interface GwfVisDataPlugin extends GwfVisPlugin {
+export interface GwfVisDataPlugin<TQuery, TData> extends GwfVisPlugin {
   /**
    * Query the data for a data source.
    * @param dataSource - A string that identifies the data source.
    * @param query - A query object.
    * @returns The data queried.
    */
-  query: (dataSource: string, query: any) => any;
+  query: (dataSource: string, query: TQuery) => TData;
 
   /**
    * A callback passed from the plugin host. Call it to register this plugin as a data provider.
@@ -83,6 +83,6 @@ export interface GwfVisDataPlugin extends GwfVisPlugin {
    */
   registerDataProviderCallback: (
     identifier: string,
-    pluginInstance: GwfVisDataPlugin
+    pluginInstance: GwfVisDataPlugin<TQuery, TData>
   ) => void;
 }
