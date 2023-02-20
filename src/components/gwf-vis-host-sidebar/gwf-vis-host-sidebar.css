@@ -2,7 +2,6 @@
   display: block;
   margin: var(--leaflet-control-margin);
   height: calc(100vh - var(--leaflet-control-margin) * 2);
-  overflow: hidden;
 }
 
 [part="container"] {
