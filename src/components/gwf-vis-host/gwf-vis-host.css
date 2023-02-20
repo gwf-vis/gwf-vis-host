@@ -35,14 +35,30 @@
   z-index: 999;
 }
 
-#loading > div {
+#loading > .inner {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 1rem;
-  font-size: 2rem;
-  user-select: none;
+}
+
+#loading .spinner {
+  border: 4px solid hsl(0, 0%, 95%);
+  border-top: 4px solid hsl(204, 70%, 53%);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* .leaflet-retina .leaflet-control-layers-toggle {

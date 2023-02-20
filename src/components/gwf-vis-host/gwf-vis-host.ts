@@ -67,7 +67,9 @@ export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
         this.loadingActive,
         () => html`
           <div id="loading">
-            <div class="leaflet-control leaflet-control-layers">Loading...</div>
+            <div class="leaflet-control leaflet-control-layers inner">
+              <div class="spinner"></div>
+            </div>
           </div>
         `
       )}
