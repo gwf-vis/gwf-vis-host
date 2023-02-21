@@ -85,7 +85,7 @@ export default class
         <label for="data-range-input">What is range of the data to query?</label>
         <input id="data-range-input" type="text" value="0:10"/>
         <br/>
-        <label for="data-type-select">What is range of the data to query?</label>
+        <label for="data-type-select">What is type of the data to query?</label>
         <select id="data-type-select">
           <option>number</option>
           <option>string</option>
