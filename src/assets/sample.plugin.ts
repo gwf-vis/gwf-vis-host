@@ -61,7 +61,7 @@ export default class
   queryDataCallback!: (
     dataSource: string,
     query: [number, number]
-  ) => (string | number)[];
+  ) => Promise<(string | number)[]>;
 
   constructor() {
     super();
