@@ -1,12 +1,12 @@
-import type leaflet from "leaflet";
 import type {
+  leaflet,
   GwfVisPlugin,
   GwfVisPluginWithSharedStates,
   GwfVisMapPlugin,
   GwfVisPluginWithData,
   SharedStates,
   LayerType,
-} from "../utils/plugin";
+} from "../index";
 
 export default class
   extends HTMLElement

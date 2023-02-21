@@ -1,4 +1,6 @@
-import type leaflet from "leaflet";
+import leaflet from "leaflet";
+
+export { leaflet };
 
 export type PluginContainer = "hidden" | "sidebar" | "main";
 
