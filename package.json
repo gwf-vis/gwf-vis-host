@@ -14,7 +14,8 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build",
+    "prepare": "npm run build"
   },
   "dependencies": {
     "leaflet": "^1.9.3",
