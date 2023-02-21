@@ -19,6 +19,7 @@ import {
 import GwfVisHostMainItemContainer from "../gwf-vis-host-main-item-container/gwf-vis-host-main-item-container";
 import GwfVisHostSidebarItemContainer from "../gwf-vis-host-sidebar-item-container/gwf-vis-host-sidebar-item-container";
 import {
+  GwfVisDataProviderPlugin,
   GwfVisPlugin,
   GwfVisPluginProps,
   GwfVisPluginWithSharedStates,
@@ -39,6 +40,10 @@ export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
   private pluginDefinitionAndInstanceMap = new Map<
     PluginDefinition,
     GwfVisPlugin
+  >();
+  private dataIdentifierAndProviderMap = new Map<
+    string,
+    GwfVisDataProviderPlugin<unknown, unknown>
   >();
   private pluginLoadingPool: boolean[] = [];
   private pluginSharedStates: SharedStates = {};
@@ -198,6 +203,8 @@ export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
         mapInstance: this.map,
         addMapLayerCallback: this.addMapLayerHandler,
         removeMapLayerCallback: this.removeMapLayerHandler,
+        registerDataProviderCallback: this.registerDataProviderHandler,
+        queryDataCallback: this.queryDataHandler,
       } as GwfVisPluginProps;
       Object.assign(pluginInstance, propsToBeSet);
       return pluginInstance;
@@ -298,5 +305,29 @@ export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
       this.layerControl?.removeLayer(layer);
       layer.remove();
     }
+  };
+
+  private registerDataProviderHandler = (
+    identifier: string,
+    pluginInstance: GwfVisDataProviderPlugin<unknown, unknown>
+  ) => {
+    if (this.dataIdentifierAndProviderMap.has(identifier)) {
+      const errorMessage = `You cannot register multiple data provider for data identifier "${identifier}".`;
+      alert(errorMessage);
+      throw Error(errorMessage);
+    }
+    if (!identifier) {
+      const errorMessage = `The data identifier for the data provider is not valid.`;
+      alert(errorMessage);
+      throw Error(errorMessage);
+    }
+    this.dataIdentifierAndProviderMap.set(identifier, pluginInstance);
+  };
+
+  private queryDataHandler = (dataSource: string, queryObject: unknown) => {
+    let [identifier, dataSourceWithoutIdentifier] = dataSource.split(/:(.+)/);
+    return this.dataIdentifierAndProviderMap
+      .get(identifier)
+      ?.queryData(dataSourceWithoutIdentifier, queryObject);
   };
 }

@@ -3,13 +3,18 @@ import type {
   GwfVisPlugin,
   GwfVisPluginWithSharedStates,
   GwfVisMapPlugin,
+  GwfVisPluginWithData,
   SharedStates,
   LayerType,
 } from "../utils/plugin";
 
 export default class
   extends HTMLElement
-  implements GwfVisPlugin, GwfVisPluginWithSharedStates, GwfVisMapPlugin
+  implements
+    GwfVisPlugin,
+    GwfVisPluginWithSharedStates,
+    GwfVisMapPlugin,
+    GwfVisPluginWithData<[number, number], (string | number)[]>
 {
   obtainHeader = () => `Sample Plugin (${this.layerName ?? ""})`;
 
@@ -53,6 +58,11 @@ export default class
       this.removeMapLayerCallback(this.#tileLayerInstance);
   }
 
+  queryDataCallback!: (
+    dataSource: string,
+    query: [number, number]
+  ) => (string | number)[];
+
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
@@ -71,6 +81,18 @@ export default class
         <span>${this.#sharedStates?.["sample-plugin.time"] ?? "N/A"}</span>
         <br/>
         <button id="update-shared-states-button">Update shared states</button>
+        <hr/>
+        <label for="data-range-input">What is range of the data to query?</label>
+        <input id="data-range-input" type="text" value="0:10"/>
+        <br/>
+        <label for="data-type-select">What is range of the data to query?</label>
+        <select id="data-type-select">
+          <option>number</option>
+          <option>string</option>
+        </select>
+        <br/>
+        <button id="data-query-button">Query data</button>
+        <p id="query-result"><p>
       </div>
     `);
     this.shadowRoot
@@ -92,6 +114,29 @@ export default class
           "sample-plugin.time": new Date().toISOString(),
         })
       );
+    this.shadowRoot
+      ?.querySelector("#data-query-button")
+      ?.addEventListener("click", async () => {
+        const dataType = (
+          this.shadowRoot?.querySelector(
+            "#data-type-select"
+          ) as HTMLSelectElement
+        )?.value;
+        const queryObject = ((
+          this.shadowRoot?.querySelector(
+            "#data-range-input"
+          ) as HTMLInputElement
+        )?.value
+          ?.split(":")
+          .map((d) => +d) ?? [0, 0]) as [number, number];
+        const data = await this.queryDataCallback(
+          `sample:${dataType}`,
+          queryObject
+        );
+        this.shadowRoot
+          ?.querySelector("#query-result")
+          ?.replaceChildren(document.createTextNode(data?.toString() ?? "N/A"));
+      });
   }
 
   private initializeMapLayer() {

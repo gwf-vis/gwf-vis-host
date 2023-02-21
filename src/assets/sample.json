@@ -6,9 +6,14 @@
     "zoom": 3
   },
   "imports": {
-    "sample": "/src/assets/sample.plugin.ts"
+    "sample": "/src/assets/sample.plugin.ts",
+    "sample-data": "/src/assets/sample-data.plugin.ts"
   },
   "plugins": [
+    {
+      "import": "sample-data",
+      "container": "hidden"
+    },
     {
       "import": "sample",
       "container": "sidebar",

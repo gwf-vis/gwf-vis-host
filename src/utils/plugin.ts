@@ -2,7 +2,9 @@ import leaflet from "leaflet";
 
 type GwfVisPluginFull = GwfVisPlugin &
   GwfVisPluginWithSharedStates &
-  GwfVisMapPlugin;
+  GwfVisMapPlugin &
+  GwfVisDataProviderPlugin<unknown, unknown> &
+  GwfVisPluginWithData<unknown, unknown>;
 
 export type GwfVisPluginProps = Partial<GwfVisPluginFull> & Record<string, any>;
 
@@ -67,14 +69,15 @@ export interface GwfVisMapPlugin extends GwfVisPlugin {
   removeMapLayerCallback: (layer: leaflet.Layer) => void;
 }
 
-export interface GwfVisDataPlugin<TQuery, TData> extends GwfVisPlugin {
+export interface GwfVisDataProviderPlugin<TQuery, TData> extends GwfVisPlugin {
   /**
    * Query the data for a data source.
+   * @async
    * @param dataSource - A string that identifies the data source.
    * @param query - A query object.
    * @returns The data queried.
    */
-  query: (dataSource: string, query: TQuery) => TData;
+  queryData: (dataSource: string, queryObject: TQuery) => Promise<TData>;
 
   /**
    * A callback passed from the plugin host. Call it to register this plugin as a data provider.
@@ -83,6 +86,17 @@ export interface GwfVisDataPlugin<TQuery, TData> extends GwfVisPlugin {
    */
   registerDataProviderCallback: (
     identifier: string,
-    pluginInstance: GwfVisDataPlugin<TQuery, TData>
+    pluginInstance: GwfVisDataProviderPlugin<TQuery, TData>
   ) => void;
+}
+
+export interface GwfVisPluginWithData<TQuery, TData> extends GwfVisPlugin {
+  /**
+   * A callback passed from the plugin host. Call it to query the data for a data source.
+   * @async
+   * @param dataSource - A string that identifies the data source.
+   * @param query - A query object.
+   * @returns The data queried.
+   */
+  queryDataCallback: (dataSource: string, queryObject: TQuery) => Promise<TData>;
 }
