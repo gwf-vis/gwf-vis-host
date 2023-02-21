@@ -1,4 +1,4 @@
-import leaflet from "leaflet";
+import type leaflet from "leaflet";
 
 export { leaflet };
 
