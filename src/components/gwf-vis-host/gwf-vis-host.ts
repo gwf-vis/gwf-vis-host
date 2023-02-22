@@ -206,12 +206,12 @@ export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
         mapInstance: this.map,
         addMapLayerCallback: this.addMapLayerHandler,
         removeMapLayerCallback: this.removeMapLayerHandler,
-        registerDataProviderCallback: this.registerDataProviderHandler,
         checkIfDataProviderRegisteredCallback:
           this.checkIfDataProviderRegisteredHandler,
         queryDataCallback: this.queryDataHandler,
       } as GwfVisPluginProps;
       Object.assign(pluginInstance, propsToBeSet);
+      this.registerPluginAsDataProviderIfValid(pluginInstance);
       return pluginInstance;
     }
     return undefined;
@@ -267,6 +267,28 @@ export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
     }
   }
 
+  private registerPluginAsDataProviderIfValid(
+    pluginInstance: Partial<GwfVisDataProviderPlugin<unknown, unknown>>
+  ) {
+    if (pluginInstance.obtainDataProviderIdentifier) {
+      const identifier = pluginInstance.obtainDataProviderIdentifier();
+      if (this.dataIdentifierAndProviderMap.has(identifier)) {
+        const errorMessage = `You cannot register multiple data provider for data identifier "${identifier}".`;
+        alert(errorMessage);
+        throw Error(errorMessage);
+      }
+      if (!identifier) {
+        const errorMessage = `The data identifier for the data provider is not valid.`;
+        alert(errorMessage);
+        throw Error(errorMessage);
+      }
+      this.dataIdentifierAndProviderMap.set(
+        identifier,
+        pluginInstance as GwfVisDataProviderPlugin<unknown, unknown>
+      );
+    }
+  }
+
   private notifyPluginLoadingHandler = () => {
     let index = this.pluginLoadingPool.findIndex(
       (item) => typeof item === "undefined"
@@ -317,23 +339,6 @@ export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
       this.layerControl?.removeLayer(layer);
       layer.remove();
     }
-  };
-
-  private registerDataProviderHandler = (
-    identifier: string,
-    pluginInstance: GwfVisDataProviderPlugin<unknown, unknown>
-  ) => {
-    if (this.dataIdentifierAndProviderMap.has(identifier)) {
-      const errorMessage = `You cannot register multiple data provider for data identifier "${identifier}".`;
-      alert(errorMessage);
-      throw Error(errorMessage);
-    }
-    if (!identifier) {
-      const errorMessage = `The data identifier for the data provider is not valid.`;
-      alert(errorMessage);
-      throw Error(errorMessage);
-    }
-    this.dataIdentifierAndProviderMap.set(identifier, pluginInstance);
   };
 
   private checkIfDataProviderRegisteredHandler = (identifier: string) =>

@@ -24,20 +24,12 @@ export default class
 {
   obtainHeader = () => "Sample Data";
 
-  notifyLoadingCallback!: () => () => void;
+  obtainDataProviderIdentifier = () => "sample";
 
-  registerDataProviderCallback!: (
-    identifier: string,
-    pluginInstance: GwfVisDataProviderPlugin<
-      [number, number],
-      (string | number)[]
-    >
-  ) => void;
+  notifyLoadingCallback!: () => () => void;
 
   queryData = async (dataSource: string, queryObject: [number, number]) =>
     data[dataSource]?.slice(queryObject?.[0], queryObject?.[1]) ?? [];
 
-  hostFirstLoadedHandler() {
-    this.registerDataProviderCallback("sample", this);
-  }
+  hostFirstLoadedHandler() {}
 }
