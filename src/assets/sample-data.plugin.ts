@@ -37,7 +37,7 @@ export default class
   queryData = async (dataSource: string, queryObject: [number, number]) =>
     data[dataSource]?.slice(queryObject?.[0], queryObject?.[1]) ?? [];
 
-  connectedCallback() {
+  hostFirstLoadedHandler() {
     this.registerDataProviderCallback("sample", this);
   }
 }

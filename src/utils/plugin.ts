@@ -20,6 +20,11 @@ export interface GwfVisPlugin extends HTMLElement {
   readonly obtainHeader: () => string;
 
   /**
+   * Will be called when the host first loaded.
+   */
+  hostFirstLoadedHandler: () => void;
+
+  /**
    * A callback passed from the plugin host. Call it to notify the plugin host about a loading is going to start.
    * The plugin host would show a loading prompt if there is any unfinished loading request of any plugin.
    * @returns A callback that notifies the plugin host that the current loading request has finished.

@@ -88,6 +88,9 @@ export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
       await this.importPlugins();
       this.loadPlugins();
       this.loadingActive = false;
+      this.applyToPlugins((pluginInstance) =>
+        pluginInstance.hostFirstLoadedHandler()
+      );
     }
   }
 
@@ -255,6 +258,13 @@ export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
     }
   }
 
+  private applyToPlugins(callback: (pluginInstance: GwfVisPlugin) => void) {
+    for (let pluginInstance of this.pluginDefinitionAndInstanceMap.values() ??
+      []) {
+      callback(pluginInstance);
+    }
+  }
+
   private notifyPluginLoadingHandler = () => {
     let index = this.pluginLoadingPool.findIndex(
       (item) => typeof item === "undefined"
@@ -272,11 +282,11 @@ export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
 
   private updatePluginSharedStatesHandler = (sharedStates: SharedStates) => {
     this.pluginSharedStates = sharedStates;
-    for (let pluginInstance of this.pluginDefinitionAndInstanceMap.values() ??
-      []) {
-      (pluginInstance as GwfVisPluginWithSharedStates).sharedStates =
-        this.pluginSharedStates;
-    }
+    this.applyToPlugins(
+      (pluginInstance) =>
+        ((pluginInstance as GwfVisPluginWithSharedStates).sharedStates =
+          this.pluginSharedStates)
+    );
   };
 
   private addMapLayerHandler = (

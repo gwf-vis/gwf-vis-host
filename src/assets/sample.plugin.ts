@@ -49,7 +49,7 @@ export default class
 
   removeMapLayerCallback!: (layer: leaflet.Layer) => void;
 
-  connectedCallback() {
+  hostFirstLoadedHandler() {
     this.initializePlugin();
   }
 
