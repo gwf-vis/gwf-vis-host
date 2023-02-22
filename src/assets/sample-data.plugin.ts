@@ -26,10 +26,6 @@ export default class
 
   obtainDataProviderIdentifier = () => "sample";
 
-  notifyLoadingCallback!: () => () => void;
-
   queryData = async (dataSource: string, queryObject: [number, number]) =>
     data[dataSource]?.slice(queryObject?.[0], queryObject?.[1]) ?? [];
-
-  hostFirstLoadedHandler() {}
 }

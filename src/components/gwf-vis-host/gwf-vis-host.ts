@@ -89,7 +89,7 @@ export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
       this.loadPlugins();
       this.loadingActive = false;
       this.applyToPlugins((pluginInstance) =>
-        pluginInstance.hostFirstLoadedHandler()
+        pluginInstance.hostFirstLoadedHandler?.()
       );
     }
   }

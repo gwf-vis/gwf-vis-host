@@ -36,33 +36,29 @@ export default class
 
   #tileLayerInstance?: leaflet.TileLayer;
 
-  leaflet!: typeof leaflet;
+  leaflet?: typeof leaflet;
 
-  mapInstance!: leaflet.Map;
-
-  addMapLayerCallback!: (
+  addMapLayerCallback?: (
     layer: leaflet.Layer,
     name: string,
     type: LayerType,
     active?: boolean
   ) => void;
 
-  removeMapLayerCallback!: (layer: leaflet.Layer) => void;
+  removeMapLayerCallback?: (layer: leaflet.Layer) => void;
 
   hostFirstLoadedHandler() {
     this.initializePlugin();
   }
 
-  checkIfDataProviderRegisteredCallback!: (identifier: string) => boolean;
-
-  queryDataCallback!: (
+  queryDataCallback?: (
     dataSource: string,
     query: [number, number]
   ) => Promise<(string | number)[]>;
 
   disconnectedCallback() {
     this.#tileLayerInstance &&
-      this.removeMapLayerCallback(this.#tileLayerInstance);
+      this.removeMapLayerCallback?.(this.#tileLayerInstance);
   }
 
   constructor() {
@@ -131,7 +127,7 @@ export default class
         )?.value
           ?.split(":")
           .map((d) => +d) ?? [0, 0]) as [number, number];
-        const data = await this.queryDataCallback(
+        const data = await this.queryDataCallback?.(
           `sample:${dataType}`,
           queryObject
         );
@@ -142,7 +138,7 @@ export default class
   }
 
   private initializeMapLayer() {
-    this.#tileLayerInstance = this.leaflet.tileLayer(
+    this.#tileLayerInstance = this.leaflet?.tileLayer(
       this.urlTemplate,
       this.options
     );
@@ -152,7 +148,7 @@ export default class
     this.renderUI();
     this.initializeMapLayer();
     this.#tileLayerInstance &&
-      this.addMapLayerCallback(
+      this.addMapLayerCallback?.(
         this.#tileLayerInstance,
         this.layerName,
         this.layerType,
