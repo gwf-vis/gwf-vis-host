@@ -29,7 +29,7 @@ export interface GwfVisPlugin extends HTMLElement {
 
 export interface GwfVisPluginWithSharedStates extends GwfVisPlugin {
   /**
-   * A key-value based shared state dictionary.
+   * A key-value based shared state dictionary passed from the plugin host.
    */
   sharedStates: SharedStates;
 
@@ -42,12 +42,12 @@ export interface GwfVisPluginWithSharedStates extends GwfVisPlugin {
 
 export interface GwfVisMapPlugin extends GwfVisPlugin {
   /**
-   * The `leaflet` instance.
+   * The `leaflet` instance passed from the plugin host..
    */
   leaflet: typeof leaflet;
 
   /**
-   * The map instance.
+   * The map instance passed from the plugin host.
    */
   mapInstance: leaflet.Map;
 
@@ -98,5 +98,8 @@ export interface GwfVisPluginWithData<TQuery, TData> extends GwfVisPlugin {
    * @param query - A query object.
    * @returns The data queried.
    */
-  queryDataCallback: (dataSource: string, queryObject: TQuery) => Promise<TData>;
+  queryDataCallback: (
+    dataSource: string,
+    queryObject: TQuery
+  ) => Promise<TData>;
 }
