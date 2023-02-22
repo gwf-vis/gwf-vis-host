@@ -97,6 +97,13 @@ export interface GwfVisDataProviderPlugin<TQuery, TData> extends GwfVisPlugin {
 
 export interface GwfVisPluginWithData<TQuery, TData> extends GwfVisPlugin {
   /**
+   * A callback passed from the plugin host. Call it to check if a corresponding data provider is registerd.
+   * @param identifier - A string identifier for data type.
+   * @returns `true` if there is a corresponding data provider registered; `false` otherwise.
+   */
+  checkIfDataProviderRegisteredCallback: (identifier: string) => boolean;
+
+  /**
    * A callback passed from the plugin host. Call it to query the data for a data source.
    * @async
    * @param dataSource - A string that identifies the data source.

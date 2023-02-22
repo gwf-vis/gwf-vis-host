@@ -53,15 +53,17 @@ export default class
     this.initializePlugin();
   }
 
-  disconnectedCallback() {
-    this.#tileLayerInstance &&
-      this.removeMapLayerCallback(this.#tileLayerInstance);
-  }
+  checkIfDataProviderRegisteredCallback!: (identifier: string) => boolean;
 
   queryDataCallback!: (
     dataSource: string,
     query: [number, number]
   ) => Promise<(string | number)[]>;
+
+  disconnectedCallback() {
+    this.#tileLayerInstance &&
+      this.removeMapLayerCallback(this.#tileLayerInstance);
+  }
 
   constructor() {
     super();
@@ -73,7 +75,7 @@ export default class
       (this.shadowRoot.innerHTML = /* html */ `
       <div 
         style="min-height: 30rem; width: 100%; padding: 10px; box-sizing: border-box;"
-      >
+        >
         <label for="timeout-input">What is the timeout of the loading?</label>
         <input id="timeout-input" type="number" value="2000"/>
         <button id="mock-loading-button">Click me to mock a loading</button>

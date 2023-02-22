@@ -207,6 +207,8 @@ export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
         addMapLayerCallback: this.addMapLayerHandler,
         removeMapLayerCallback: this.removeMapLayerHandler,
         registerDataProviderCallback: this.registerDataProviderHandler,
+        checkIfDataProviderRegisteredCallback:
+          this.checkIfDataProviderRegisteredHandler,
         queryDataCallback: this.queryDataHandler,
       } as GwfVisPluginProps;
       Object.assign(pluginInstance, propsToBeSet);
@@ -333,6 +335,9 @@ export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
     }
     this.dataIdentifierAndProviderMap.set(identifier, pluginInstance);
   };
+
+  private checkIfDataProviderRegisteredHandler = (identifier: string) =>
+    this.dataIdentifierAndProviderMap.has(identifier);
 
   private queryDataHandler = (dataSource: string, queryObject: unknown) => {
     let [identifier, dataSourceWithoutIdentifier] = dataSource.split(/:(.+)/);
