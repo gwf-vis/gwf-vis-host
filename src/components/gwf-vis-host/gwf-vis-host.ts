@@ -5,7 +5,7 @@ import { when } from "lit/directives/when.js";
 import leaflet from "leaflet";
 
 import { MapView } from "../../utils/basic";
-import GwfVisHostSidebar from "../gwf-vis-host-sidebar/gwf-vis-host-sidebar";
+import GWFVisHostSidebar from "../gwf-vis-host-sidebar/gwf-vis-host-sidebar";
 import styles from "./gwf-vis-host.css?inline";
 import leafletStyles from "../../../node_modules/leaflet/dist/leaflet.css?inline";
 import { obtainActualUrl } from "../../utils/url";
@@ -16,8 +16,8 @@ import {
   GwfVisHostConfig,
   PluginDefinition,
 } from "../../utils/gwf-vis-host-config";
-import GwfVisHostMainItemContainer from "../gwf-vis-host-main-item-container/gwf-vis-host-main-item-container";
-import GwfVisHostSidebarItemContainer from "../gwf-vis-host-sidebar-item-container/gwf-vis-host-sidebar-item-container";
+import GWFVisHostMainItemContainer from "../gwf-vis-host-main-item-container/gwf-vis-host-main-item-container";
+import GWFVisHostSidebarItemContainer from "../gwf-vis-host-sidebar-item-container/gwf-vis-host-sidebar-item-container";
 import {
   GwfVisDataProviderPlugin,
   GwfVisPlugin,
@@ -35,7 +35,7 @@ export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
   private layerControl?: leaflet.Control.Layers;
   private sidebar?: leaflet.Control;
   private mapElementRef = createRef<HTMLDivElement>();
-  private sidebarElement?: GwfVisHostSidebar;
+  private sidebarElement?: GWFVisHostSidebar;
   private hiddenPluginContainerRef = createRef<HTMLDivElement>();
   private pluginDefinitionAndInstanceMap = new Map<
     PluginDefinition,
@@ -107,7 +107,7 @@ export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
       onAdd: () => {
         this.sidebarElement = leaflet.DomUtil.create(
           "gwf-vis-host-sidebar"
-        ) as GwfVisHostSidebar;
+        ) as GWFVisHostSidebar;
         this.sidebarElement.classList.add("leaflet-control-layers");
         this.stopEventPropagationToTheMapElement(this.sidebarElement);
         return this.sidebarElement;
@@ -169,7 +169,7 @@ export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
       case "main": {
         const itemContainerElement = document.createElement(
           "gwf-vis-host-main-item-container"
-        ) as GwfVisHostMainItemContainer;
+        ) as GWFVisHostMainItemContainer;
         itemContainerElement.header = pluginInstance.obtainHeader();
         itemContainerElement.containerProps = pluginDefinition.containerProps;
         itemContainerElement.append(pluginInstance);
@@ -179,7 +179,7 @@ export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
       case "sidebar": {
         const itemContainerElement = document.createElement(
           "gwf-vis-host-sidebar-item-container"
-        ) as GwfVisHostSidebarItemContainer;
+        ) as GWFVisHostSidebarItemContainer;
         itemContainerElement.header = pluginInstance.obtainHeader();
         itemContainerElement.containerProps = pluginDefinition.containerProps;
         itemContainerElement.append(pluginInstance);
