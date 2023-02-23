@@ -74,11 +74,11 @@ export default class
         >
         <label for="timeout-input">What is the timeout of the loading?</label>
         <input id="timeout-input" type="number" value="2000"/>
-        <button id="mock-loading-button">Click me to mock a loading</button>
+        <gwf-vis-ui-button id="mock-loading-button">Click me to mock a loading</gwf-vis-ui-button>
         <hr/>
         <span>${this.#sharedStates?.["sample-plugin.time"] ?? "N/A"}</span>
         <br/>
-        <button id="update-shared-states-button">Update shared states</button>
+        <gwf-vis-ui-button id="update-shared-states-button">Update shared states</gwf-vis-ui-button>
         <hr/>
         <label for="data-range-input">What is range of the data to query?</label>
         <input id="data-range-input" type="text" value="0:10"/>
@@ -89,8 +89,14 @@ export default class
           <option>string</option>
         </select>
         <br/>
-        <button id="data-query-button">Query data</button>
+        <gwf-vis-ui-button id="data-query-button">Query data</gwf-vis-ui-button>
         <p id="query-result"><p>
+        <hr/>
+        <gwf-vis-ui-button disabled>Disabled</gwf-vis-ui-button>
+        <gwf-vis-ui-button variant="hollow">Hollow</gwf-vis-ui-button>
+        <gwf-vis-ui-button variant="clear">Clear</gwf-vis-ui-button>
+        <gwf-vis-ui-button variant="round">Round</gwf-vis-ui-button>
+        <gwf-vis-ui-button variant="link" href="https://github.com">Link</gwf-vis-ui-button>
       </div>
     `);
     this.shadowRoot
