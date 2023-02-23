@@ -1,18 +1,18 @@
 import type leaflet from "leaflet";
 
-type GwfVisPluginFull = GwfVisPlugin &
-  GwfVisPluginWithSharedStates &
-  GwfVisMapPlugin &
-  GwfVisDataProviderPlugin<unknown, unknown> &
-  GwfVisPluginWithData<unknown, unknown>;
+type GWFVisPluginFull = GWFVisPlugin &
+  GWFVisPluginWithSharedStates &
+  GWFVisMapPlugin &
+  GWFVisDataProviderPlugin<unknown, unknown> &
+  GWFVisPluginWithData<unknown, unknown>;
 
-export type GwfVisPluginProps = Partial<GwfVisPluginFull> & Record<string, any>;
+export type GWFVisPluginProps = Partial<GWFVisPluginFull> & Record<string, any>;
 
 export type SharedStates = Record<string, any>;
 
 export type LayerType = "base-layer" | "overlay";
 
-export interface GwfVisPlugin extends HTMLElement {
+export interface GWFVisPlugin extends HTMLElement {
   /**
    * Obtain the plugin's header to be displayed.
    * @returns A string of the header.
@@ -32,7 +32,7 @@ export interface GwfVisPlugin extends HTMLElement {
   notifyLoadingCallback?: () => () => void;
 }
 
-export interface GwfVisPluginWithSharedStates extends GwfVisPlugin {
+export interface GWFVisPluginWithSharedStates extends GWFVisPlugin {
   /**
    * A key-value based shared state dictionary passed from the plugin host.
    */
@@ -45,7 +45,7 @@ export interface GwfVisPluginWithSharedStates extends GwfVisPlugin {
   updateSharedStatesCallback?: (sharedStates: SharedStates) => void;
 }
 
-export interface GwfVisMapPlugin extends GwfVisPlugin {
+export interface GWFVisMapPlugin extends GWFVisPlugin {
   /**
    * The `leaflet` instance passed from the plugin host..
    */
@@ -74,7 +74,7 @@ export interface GwfVisMapPlugin extends GwfVisPlugin {
   removeMapLayerCallback?: (layer: leaflet.Layer) => void;
 }
 
-export interface GwfVisDataProviderPlugin<TQuery, TData> extends GwfVisPlugin {
+export interface GWFVisDataProviderPlugin<TQuery, TData> extends GWFVisPlugin {
   /**
    * Obtain the plugin's data provider identifier.
    * @returns A string of the data provider identifier.
@@ -91,7 +91,7 @@ export interface GwfVisDataProviderPlugin<TQuery, TData> extends GwfVisPlugin {
   queryData: (dataSource: string, queryObject: TQuery) => Promise<TData>;
 }
 
-export interface GwfVisPluginWithData<TQuery, TData> extends GwfVisPlugin {
+export interface GWFVisPluginWithData<TQuery, TData> extends GWFVisPlugin {
   /**
    * A callback passed from the plugin host. Call it to check if a corresponding data provider is registerd.
    * @param identifier - A string identifier for data type.

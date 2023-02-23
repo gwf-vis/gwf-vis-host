@@ -1,7 +1,7 @@
-import type { GwfVisPlugin } from "./plugin";
+import type { GWFVisPlugin } from "./plugin";
 
-export type GwfVisPluginModule = {
-  default: { new (): GwfVisPlugin };
+export type GWFVisPluginModule = {
+  default: { new (): GWFVisPlugin };
 };
 
 export const pluginNameAndTagNameMap = new Map<string, string>();
@@ -9,7 +9,7 @@ export const pluginNameAndTagNameMap = new Map<string, string>();
 export default async function importPlugin(name: string, url: string) {
   const pluginModule = (await import(
     /* @vite-ignore */ url
-  )) as GwfVisPluginModule;
+  )) as GWFVisPluginModule;
   const plugin = pluginModule?.default;
   const uniqueId = pluginNameAndTagNameMap.size;
   const tagName = `gwf-vis-plugin-${convertToDashCase(name)}-${uniqueId}`;

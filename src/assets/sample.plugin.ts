@@ -1,9 +1,9 @@
 import type {
   leaflet,
-  GwfVisPlugin,
-  GwfVisPluginWithSharedStates,
-  GwfVisMapPlugin,
-  GwfVisPluginWithData,
+  GWFVisPlugin,
+  GWFVisPluginWithSharedStates,
+  GWFVisMapPlugin,
+  GWFVisPluginWithData,
   GWFVisUIInput,
   SharedStates,
   LayerType,
@@ -12,10 +12,10 @@ import type {
 export default class
   extends HTMLElement
   implements
-    GwfVisPlugin,
-    GwfVisPluginWithSharedStates,
-    GwfVisMapPlugin,
-    GwfVisPluginWithData<[number, number], (string | number)[]>
+    GWFVisPlugin,
+    GWFVisPluginWithSharedStates,
+    GWFVisMapPlugin,
+    GWFVisPluginWithData<[number, number], (string | number)[]>
 {
   obtainHeader = () => `Sample Plugin (${this.layerName ?? ""})`;
 

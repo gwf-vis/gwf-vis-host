@@ -7,7 +7,7 @@ export type PluginDefinition = {
   props?: any;
 };
 
-export interface GwfVisHostConfig {
+export interface GWFVisHostConfig {
   fileBasePath?: string;
   preferCanvas?: boolean;
   view?: MapView;

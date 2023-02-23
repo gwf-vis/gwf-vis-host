@@ -12,16 +12,16 @@ import importPlugin, {
 import type { MapView } from "../../utils/basic";
 import type { GWFVisHostSidebar } from "../gwf-vis-host-sidebar/gwf-vis-host-sidebar";
 import type {
-  GwfVisHostConfig,
+  GWFVisHostConfig,
   PluginDefinition,
 } from "../../utils/gwf-vis-host-config";
 import type { GWFVisHostMainItemContainer } from "../gwf-vis-host-main-item-container/gwf-vis-host-main-item-container";
 import type { GWFVisHostSidebarItemContainer } from "../gwf-vis-host-sidebar-item-container/gwf-vis-host-sidebar-item-container";
 import type {
-  GwfVisDataProviderPlugin,
-  GwfVisPlugin,
-  GwfVisPluginProps,
-  GwfVisPluginWithSharedStates,
+  GWFVisDataProviderPlugin,
+  GWFVisPlugin,
+  GWFVisPluginProps,
+  GWFVisPluginWithSharedStates,
   LayerType,
   SharedStates,
 } from "../../utils/plugin";
@@ -30,7 +30,7 @@ import styles from "./gwf-vis-host.css?inline";
 import leafletStyles from "../../../node_modules/leaflet/dist/leaflet.css?inline";
 
 @customElement("gwf-vis-host")
-export class GwfVisHost extends LitElement implements GwfVisHostConfig {
+export class GWFVisHost extends LitElement implements GWFVisHostConfig {
   static styles = [css([leafletStyles] as any), css([styles] as any)];
 
   private map?: leaflet.Map;
@@ -41,11 +41,11 @@ export class GwfVisHost extends LitElement implements GwfVisHostConfig {
   private hiddenPluginContainerRef = createRef<HTMLDivElement>();
   private pluginDefinitionAndInstanceMap = new Map<
     PluginDefinition,
-    GwfVisPlugin
+    GWFVisPlugin
   >();
   private dataIdentifierAndProviderMap = new Map<
     string,
-    GwfVisDataProviderPlugin<unknown, unknown>
+    GWFVisDataProviderPlugin<unknown, unknown>
   >();
   private pluginLoadingPool: boolean[] = [];
   private pluginSharedStates: SharedStates = {};
@@ -161,7 +161,7 @@ export class GwfVisHost extends LitElement implements GwfVisHostConfig {
 
   private assignPluginInstanceIntoContainer(
     pluginDefinition: PluginDefinition,
-    pluginInstance: GwfVisPlugin
+    pluginInstance: GWFVisPlugin
   ) {
     switch (pluginDefinition.container) {
       case "hidden": {
@@ -198,7 +198,7 @@ export class GwfVisHost extends LitElement implements GwfVisHostConfig {
     if (pluginTagName) {
       const pluginInstance = document.createElement(
         pluginTagName
-      ) as GwfVisPlugin;
+      ) as GWFVisPlugin;
       const propsToBeSet = {
         ...pluginDefinition.props,
         notifyLoadingCallback: this.notifyPluginLoadingHandler,
@@ -211,7 +211,7 @@ export class GwfVisHost extends LitElement implements GwfVisHostConfig {
         checkIfDataProviderRegisteredCallback:
           this.checkIfDataProviderRegisteredHandler,
         queryDataCallback: this.queryDataHandler,
-      } as GwfVisPluginProps;
+      } as GWFVisPluginProps;
       Object.assign(pluginInstance, propsToBeSet);
       this.registerPluginAsDataProviderIfValid(pluginInstance);
       return pluginInstance;
@@ -262,7 +262,7 @@ export class GwfVisHost extends LitElement implements GwfVisHostConfig {
     }
   }
 
-  private applyToPlugins(callback: (pluginInstance: GwfVisPlugin) => void) {
+  private applyToPlugins(callback: (pluginInstance: GWFVisPlugin) => void) {
     for (let pluginInstance of this.pluginDefinitionAndInstanceMap.values() ??
       []) {
       callback(pluginInstance);
@@ -270,7 +270,7 @@ export class GwfVisHost extends LitElement implements GwfVisHostConfig {
   }
 
   private registerPluginAsDataProviderIfValid(
-    pluginInstance: Partial<GwfVisDataProviderPlugin<unknown, unknown>>
+    pluginInstance: Partial<GWFVisDataProviderPlugin<unknown, unknown>>
   ) {
     if (pluginInstance.obtainDataProviderIdentifier) {
       const identifier = pluginInstance.obtainDataProviderIdentifier();
@@ -286,7 +286,7 @@ export class GwfVisHost extends LitElement implements GwfVisHostConfig {
       }
       this.dataIdentifierAndProviderMap.set(
         identifier,
-        pluginInstance as GwfVisDataProviderPlugin<unknown, unknown>
+        pluginInstance as GWFVisDataProviderPlugin<unknown, unknown>
       );
     }
   }
@@ -310,7 +310,7 @@ export class GwfVisHost extends LitElement implements GwfVisHostConfig {
     this.pluginSharedStates = sharedStates;
     this.applyToPlugins(
       (pluginInstance) =>
-        ((pluginInstance as GwfVisPluginWithSharedStates).sharedStates =
+        ((pluginInstance as GWFVisPluginWithSharedStates).sharedStates =
           this.pluginSharedStates)
     );
   };
