@@ -70,7 +70,7 @@ export default class
     this.shadowRoot &&
       (this.shadowRoot.innerHTML = /* html */ `
       <div 
-        style="min-height: 30rem; width: 100%; padding: 10px; box-sizing: border-box;"
+        style="min-height: 30rem; width: 100%; box-sizing: border-box;"
         >
         <label for="timeout-input">What is the timeout of the loading?</label>
         <input id="timeout-input" type="number" value="2000"/>

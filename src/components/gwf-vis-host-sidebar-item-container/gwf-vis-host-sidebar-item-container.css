@@ -19,6 +19,7 @@
   box-shadow: var(--leaflet-control-box-shadow);
   max-width: 100%;
   overflow: hidden;
+  padding: var(--leaflet-control-padding);
 }
 
 gwf-vis-host-collapse::part(header) {
