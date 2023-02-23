@@ -1,4 +1,4 @@
-import { MapView, PluginContainer } from "./basic";
+import type { MapView, PluginContainer } from "./basic";
 
 export type PluginDefinition = {
   import: string;

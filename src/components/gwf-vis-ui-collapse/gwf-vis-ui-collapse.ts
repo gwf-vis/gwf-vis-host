@@ -4,7 +4,7 @@ import { customElement, property } from "lit/decorators.js";
 import styles from "./gwf-vis-ui-collapse.css?inline";
 
 @customElement("gwf-vis-ui-collapse")
-export default class GWFVisUICollapse extends LitElement {
+export class GWFVisUICollapse extends LitElement {
   static styles = [css([styles] as any)];
 
   @property({ type: Boolean, reflect: true }) collapsed: boolean = false;

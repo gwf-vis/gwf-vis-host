@@ -4,21 +4,20 @@ import { ref, createRef } from "lit/directives/ref.js";
 import { when } from "lit/directives/when.js";
 import leaflet from "leaflet";
 
-import { MapView } from "../../utils/basic";
-import GWFVisHostSidebar from "../gwf-vis-host-sidebar/gwf-vis-host-sidebar";
-import styles from "./gwf-vis-host.css?inline";
-import leafletStyles from "../../../node_modules/leaflet/dist/leaflet.css?inline";
 import { obtainActualUrl } from "../../utils/url";
 import importPlugin, {
   pluginNameAndTagNameMap,
 } from "../../utils/import-plugin";
-import {
+
+import type { MapView } from "../../utils/basic";
+import type { GWFVisHostSidebar } from "../gwf-vis-host-sidebar/gwf-vis-host-sidebar";
+import type {
   GwfVisHostConfig,
   PluginDefinition,
 } from "../../utils/gwf-vis-host-config";
-import GWFVisHostMainItemContainer from "../gwf-vis-host-main-item-container/gwf-vis-host-main-item-container";
-import GWFVisHostSidebarItemContainer from "../gwf-vis-host-sidebar-item-container/gwf-vis-host-sidebar-item-container";
-import {
+import type { GWFVisHostMainItemContainer } from "../gwf-vis-host-main-item-container/gwf-vis-host-main-item-container";
+import type { GWFVisHostSidebarItemContainer } from "../gwf-vis-host-sidebar-item-container/gwf-vis-host-sidebar-item-container";
+import type {
   GwfVisDataProviderPlugin,
   GwfVisPlugin,
   GwfVisPluginProps,
@@ -27,8 +26,11 @@ import {
   SharedStates,
 } from "../../utils/plugin";
 
+import styles from "./gwf-vis-host.css?inline";
+import leafletStyles from "../../../node_modules/leaflet/dist/leaflet.css?inline";
+
 @customElement("gwf-vis-host")
-export default class GwfVisHost extends LitElement implements GwfVisHostConfig {
+export class GwfVisHost extends LitElement implements GwfVisHostConfig {
   static styles = [css([leafletStyles] as any), css([styles] as any)];
 
   private map?: leaflet.Map;

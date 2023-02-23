@@ -4,7 +4,7 @@ import { customElement, property } from "lit/decorators.js";
 import styles from "./gwf-vis-host-sidebar-item-container.css?inline";
 
 @customElement("gwf-vis-host-sidebar-item-container")
-export default class GWFVisHostSidebarItemContainer extends LitElement {
+export class GWFVisHostSidebarItemContainer extends LitElement {
   static styles = [css([styles] as any)];
 
   @property({ reflect: true }) header?: string;

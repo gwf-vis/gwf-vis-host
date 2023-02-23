@@ -1,4 +1,4 @@
-import { GwfVisPlugin } from "./plugin";
+import type { GwfVisPlugin } from "./plugin";
 
 export type GwfVisPluginModule = {
   default: { new (): GwfVisPlugin };

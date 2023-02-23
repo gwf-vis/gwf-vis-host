@@ -8,7 +8,7 @@ import styles from "./gwf-vis-ui-button.css?inline";
 export type ButtonVariant = "solid" | "hollow" | "clear" | "round" | "link";
 
 @customElement("gwf-vis-ui-button")
-export default class GWFVisUIButton extends LitElement {
+export class GWFVisUIButton extends LitElement {
   static styles = [css([styles] as any)];
 
   @property({ reflect: true }) variant: ButtonVariant = "solid";
