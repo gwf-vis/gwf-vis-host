@@ -30,9 +30,10 @@ import styles from "./gwf-vis-host.css?inline";
 import leafletStyles from "../../../node_modules/leaflet/dist/leaflet.css?inline";
 
 @customElement("gwf-vis-host")
-export class GWFVisHost extends LitElement implements GWFVisHostConfig {
+export class GWFVisHost extends LitElement {
   static styles = [css([leafletStyles] as any), css([styles] as any)];
 
+  private initialized = false;
   private map?: leaflet.Map;
   private layerControl?: leaflet.Control.Layers;
   private sidebar?: leaflet.Control;
@@ -52,35 +53,43 @@ export class GWFVisHost extends LitElement implements GWFVisHostConfig {
 
   @state() loadingActive: boolean = true;
 
-  @property() preferCanvas: boolean = false;
-  @property() view?: MapView;
-  @property() fileBasePath: string = ".";
-  @property() imports?: { [name: string]: string };
-  @property() plugins?: PluginDefinition[];
+  @property() config?: GWFVisHostConfig;
 
-  firstUpdated() {
-    this.initializeVis();
+  updated() {
+    if (!this.initialized && this.config) {
+      this.initialized = true;
+      this.initializeVis();
+    }
   }
 
   render() {
-    return html`
-      <div id="map" ${ref(this.mapElementRef)}></div>
-      <div
-        id="invisible-plugin-container"
-        hidden
-        ${ref(this.hiddenPluginContainerRef)}
-      ></div>
-      ${when(
-        this.loadingActive,
-        () => html`
-          <div id="loading">
-            <div class="leaflet-control leaflet-control-layers inner">
-              <div class="spinner"></div>
+    return when(
+      this.config,
+      () => html`
+        <div id="map" ${ref(this.mapElementRef)}></div>
+        <div
+          id="invisible-plugin-container"
+          hidden
+          ${ref(this.hiddenPluginContainerRef)}
+        ></div>
+        ${when(
+          this.loadingActive,
+          () => html`
+            <div id="loading">
+              <div class="leaflet-control leaflet-control-layers inner">
+                <div class="spinner"></div>
+              </div>
             </div>
-          </div>
-        `
-      )}
-    `;
+          `
+        )}
+      `,
+      () =>
+        html`<div
+          style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);"
+        >
+          Waiting for config to be set...
+        </div>`
+    );
   }
 
   private async initializeVis() {
@@ -97,8 +106,10 @@ export class GWFVisHost extends LitElement implements GWFVisHostConfig {
   }
 
   private initializeMap(mapElement: HTMLElement) {
-    this.map = leaflet.map(mapElement, { preferCanvas: this.preferCanvas });
-    this.updateView(this.view);
+    this.map = leaflet.map(mapElement, {
+      preferCanvas: this.config?.preferCanvas,
+    });
+    this.updateView(this.config?.view);
     this.initializeLayerControl();
     this.map.zoomControl.setPosition("topright");
   }
@@ -142,7 +153,7 @@ export class GWFVisHost extends LitElement implements GWFVisHostConfig {
 
   private loadPlugins() {
     try {
-      for (const pluginDefinition of this.plugins ?? []) {
+      for (const pluginDefinition of this.config?.plugins ?? []) {
         this.loadPlugin(pluginDefinition);
       }
     } catch (e: any) {
@@ -221,8 +232,11 @@ export class GWFVisHost extends LitElement implements GWFVisHostConfig {
 
   private async importPlugins() {
     try {
-      for (const [name, url] of Object.entries(this.imports ?? {})) {
-        const actualUrl = obtainActualUrl(url, this.fileBasePath);
+      for (const [name, url] of Object.entries(this.config?.imports ?? {})) {
+        const actualUrl = obtainActualUrl(
+          url,
+          this.config?.fileBasePath ?? "."
+        );
         await importPlugin(name, actualUrl);
       }
     } catch (e: any) {

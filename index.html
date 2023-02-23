@@ -15,10 +15,10 @@
     <script>
       async function main() {
         const visHost = document.querySelector("gwf-vis-host");
-        const config = await fetch("./src/assets/sample.json").then((response) =>
-          response.json()
+        const config = await fetch("./src/assets/sample.json").then(
+          (response) => response.json()
         );
-        Object.assign(visHost, config);
+        visHost.config = config;
       }
       main();
     </script>
