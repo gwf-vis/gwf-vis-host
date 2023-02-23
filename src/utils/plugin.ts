@@ -76,19 +76,24 @@ export interface GWFVisMapPlugin extends GWFVisPlugin {
 
 export interface GWFVisDataProviderPlugin<TQuery, TData> extends GWFVisPlugin {
   /**
-   * Obtain the plugin's data provider identifier.
-   * @returns A string of the data provider identifier.
+   * Obtain the plugin's data provider identifiers.
+   * @returns An array of string of the data provider's identifiers.
    */
-  obtainDataProviderIdentifier: () => string;
+  obtainDataProviderIdentifiers: () => string[];
 
   /**
    * Query the data for a data source.
    * @async
-   * @param dataSource - A string that identifies the data source.
+   * @param identifier - A string identifier for data type.
+   * @param dataSource - A string that references the data source.
    * @param query - A query object.
    * @returns The data queried.
    */
-  queryData: (dataSource: string, queryObject: TQuery) => Promise<TData>;
+  queryData: (
+    identifier: string,
+    dataSource: string,
+    queryObject: TQuery
+  ) => Promise<TData>;
 }
 
 export interface GWFVisPluginWithData<TQuery, TData> extends GWFVisPlugin {

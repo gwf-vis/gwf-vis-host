@@ -286,22 +286,24 @@ export class GWFVisHost extends LitElement {
   private registerPluginAsDataProviderIfValid(
     pluginInstance: Partial<GWFVisDataProviderPlugin<unknown, unknown>>
   ) {
-    if (pluginInstance.obtainDataProviderIdentifier) {
-      const identifier = pluginInstance.obtainDataProviderIdentifier();
-      if (this.dataIdentifierAndProviderMap.has(identifier)) {
-        const errorMessage = `You cannot register multiple data provider for data identifier "${identifier}".`;
-        alert(errorMessage);
-        throw Error(errorMessage);
-      }
-      if (!identifier) {
-        const errorMessage = `The data identifier for the data provider is not valid.`;
-        alert(errorMessage);
-        throw Error(errorMessage);
-      }
-      this.dataIdentifierAndProviderMap.set(
-        identifier,
-        pluginInstance as GWFVisDataProviderPlugin<unknown, unknown>
-      );
+    if (pluginInstance.obtainDataProviderIdentifiers) {
+      const identifiers = pluginInstance.obtainDataProviderIdentifiers();
+      identifiers?.forEach((identifier) => {
+        if (this.dataIdentifierAndProviderMap.has(identifier)) {
+          const errorMessage = `You cannot register multiple data providers for data identifier "${identifier}".`;
+          alert(errorMessage);
+          throw Error(errorMessage);
+        }
+        if (!identifier) {
+          const errorMessage = `The data identifier for the data provider is not valid.`;
+          alert(errorMessage);
+          throw Error(errorMessage);
+        }
+        this.dataIdentifierAndProviderMap.set(
+          identifier,
+          pluginInstance as GWFVisDataProviderPlugin<unknown, unknown>
+        );
+      });
     }
   }
 
@@ -364,6 +366,6 @@ export class GWFVisHost extends LitElement {
     let [identifier, dataSourceWithoutIdentifier] = dataSource.split(/:(.+)/);
     return this.dataIdentifierAndProviderMap
       .get(identifier)
-      ?.queryData(dataSourceWithoutIdentifier, queryObject);
+      ?.queryData(identifier, dataSourceWithoutIdentifier, queryObject);
   };
 }

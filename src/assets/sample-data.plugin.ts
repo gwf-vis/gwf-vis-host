@@ -24,8 +24,11 @@ export default class
 {
   obtainHeader = () => "Sample Data";
 
-  obtainDataProviderIdentifier = () => "sample";
+  obtainDataProviderIdentifiers = () => ["sample"];
 
-  queryData = async (dataSource: string, queryObject: [number, number]) =>
-    data[dataSource]?.slice(queryObject?.[0], queryObject?.[1]) ?? [];
+  queryData = async (
+    _identifier: string,
+    dataSource: string,
+    queryObject: [number, number]
+  ) => data[dataSource]?.slice(queryObject?.[0], queryObject?.[1]) ?? [];
 }
