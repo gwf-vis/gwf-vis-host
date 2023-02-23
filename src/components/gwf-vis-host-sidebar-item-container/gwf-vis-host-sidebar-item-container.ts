@@ -18,7 +18,7 @@ export default class GwfVisHostSidebarItemContainer extends LitElement {
     return this.containerProps?.slot === "top"
       ? this.renderContent()
       : html`
-          <gwf-vis-host-collapse>${this.renderContent()}</gwf-vis-host-collapse>
+          <gwf-vis-ui-collapse>${this.renderContent()}</gwf-vis-ui-collapse>
         `;
   }
 

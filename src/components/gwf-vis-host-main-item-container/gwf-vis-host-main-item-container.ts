@@ -17,12 +17,12 @@ export default class GwfVisHostMainItemContainer extends LitElement {
           width: ${this.containerProps?.width ?? "auto"};
         }
       </style>
-      <gwf-vis-host-collapse>
+      <gwf-vis-ui-collapse>
         <div part="header" slot="header" .innerHTML=${this.header ?? ""}></div>
         <div part="content">
           <slot></slot>
         </div>
-      </gwf-vis-host-collapse>
+      </gwf-vis-ui-collapse>
     `;
   }
 }

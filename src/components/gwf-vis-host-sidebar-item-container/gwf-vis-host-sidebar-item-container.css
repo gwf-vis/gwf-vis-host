@@ -22,10 +22,10 @@
   padding: var(--leaflet-control-padding);
 }
 
-gwf-vis-host-collapse::part(header) {
+gwf-vis-ui-collapse::part(header) {
   margin: 0 var(--leaflet-control-margin);
 }
 
-gwf-vis-host-collapse::part(content) {
+gwf-vis-ui-collapse::part(content) {
   margin: var(--leaflet-control-margin);
 }
