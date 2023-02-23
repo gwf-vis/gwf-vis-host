@@ -1,0 +1,44 @@
+:host {
+  --box-shadow-shape: 0 1px 2px 0;
+  --box-shadow-shape-hover: 0 1px 5px 0;
+  --primary-color: hsl(218, 100%, 61%);
+  --shadow-color: hsl(0, 0%, 0%, 0.5);
+  --main-color: hsl(0, 0%, 0%);
+  --contract-color: hsl(0, 0%, 100%);
+  --background-color: hsl(0, 0%, 100%);
+
+  -webkit-tap-highlight-color: transparent;
+  display: inline-block;
+  position: relative;
+  cursor: default;
+  margin: 8px;
+  padding: 5px;
+  border-radius: 5px;
+  background: var(--background-color);
+  box-shadow: inset var(--box-shadow-shape) var(--shadow-color);
+  transition: box-shadow 0.3s;
+}
+
+:host(:hover) {
+  box-shadow: inset var(--box-shadow-shape-hover) var(--shadow-color);
+}
+
+:host(:focus-within) {
+  box-shadow: inset var(--box-shadow-shape-hover) var(--shadow-color),
+    inset 0 -1px 5px 0 var(--primary-color);
+}
+
+:host([disabled]) {
+  pointer-events: none;
+  filter: contrast(0.6);
+}
+
+[part="native"] {
+  width: 100%;
+  outline: none;
+  border: none;
+  font-size: 1em;
+  background: none;
+  padding: 0 5px;
+  caret-color: var(--primary-color);
+}

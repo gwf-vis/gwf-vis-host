@@ -5,6 +5,7 @@ export * from "./components/gwf-vis-host-main-item-container/gwf-vis-host-main-i
 
 export * from "./components/gwf-vis-ui-button/gwf-vis-ui-button";
 export * from "./components/gwf-vis-ui-collapse/gwf-vis-ui-collapse";
+export * from "./components/gwf-vis-ui-input/gwf-vis-ui-input";
 
 export * from "./utils/basic";
 export * from "./utils/plugin";
