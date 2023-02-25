@@ -210,7 +210,7 @@ export class GWFVisHost extends LitElement {
         itemContainerElement.showContentInlargeViewCallback = (
           pluginInstance
         ) => this.presentPluginInLargeView(pluginInstance);
-        itemContainerElement.header = pluginInstance.obtainHeader();
+        itemContainerElement.header = pluginInstance.obtainHeaderCallback();
         itemContainerElement.containerProps = pluginDefinition.containerProps;
         itemContainerElement.append(pluginInstance);
         this.initializeMainContainerControl(itemContainerElement);
@@ -223,7 +223,7 @@ export class GWFVisHost extends LitElement {
         itemContainerElement.showContentInlargeViewCallback = (
           pluginInstance
         ) => this.presentPluginInLargeView(pluginInstance);
-        itemContainerElement.header = pluginInstance.obtainHeader();
+        itemContainerElement.header = pluginInstance.obtainHeaderCallback();
         itemContainerElement.containerProps = pluginDefinition.containerProps;
         itemContainerElement.append(pluginInstance);
         this.sidebarElement?.append(itemContainerElement);
@@ -405,7 +405,7 @@ export class GWFVisHost extends LitElement {
       return;
     }
     this.pluginLargePresenterContentInfo = {
-      header: pluginInstance?.obtainHeader(),
+      header: pluginInstance?.obtainHeaderCallback(),
       pluginInstance,
       originalContainer: pluginInstance?.parentElement,
     };

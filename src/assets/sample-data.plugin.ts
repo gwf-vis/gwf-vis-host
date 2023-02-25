@@ -22,7 +22,7 @@ export default class
     GWFVisPlugin,
     GWFVisDataProviderPlugin<[number, number], (string | number)[]>
 {
-  obtainHeader = () => "Sample Data";
+  obtainHeaderCallback = () => "Sample Data";
 
   obtainDataProviderIdentifiersCallback = () => ["sample"];
 

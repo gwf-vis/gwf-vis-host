@@ -17,7 +17,7 @@ export interface GWFVisPlugin extends HTMLElement {
    * Will be called when the host needs to obtain this plugin's header.
    * @returns A string of the header.
    */
-  readonly obtainHeader: () => string;
+  readonly obtainHeaderCallback: () => string;
 
   /**
    * Will be called when the host first loaded.
@@ -57,10 +57,10 @@ export interface GWFVisMapPlugin extends GWFVisPlugin {
   mapInstance?: leaflet.Map;
 
   /**
-   * A helper function passed from the plugin host. Call it to add a layer into the map instance.
+   * A delegate passed from the plugin host. Call it to add a layer into the map instance.
    * It will also add the layer into the layer control.
    */
-  addMapLayerHelper?: (
+  addMapLayerDelegate?: (
     layer: leaflet.Layer,
     name: string,
     type: LayerType,
