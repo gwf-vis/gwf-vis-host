@@ -17,7 +17,7 @@ export default class
     GWFVisMapPlugin,
     GWFVisPluginWithData<[number, number], (string | number)[]>
 {
-  obtainHeader = () => `<i>Sample Plugin</i> (${this.layerName ?? ""})`;
+  obtainHeader = () => `Sample Plugin (${this.layerName ?? ""})`;
 
   notifyLoadingDelegate!: () => () => void;
 

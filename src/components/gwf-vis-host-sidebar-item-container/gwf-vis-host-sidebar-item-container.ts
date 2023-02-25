@@ -30,7 +30,7 @@ export class GWFVisHostSidebarItemContainer extends LitElement {
         part="header"
         slot=${this.containerProps?.slot === "top" ? "" : "header"}
       >
-        <span .innerHTML=${this.header ?? ""}></span>
+        <span>${this.header}</span>
         <button
           id="show-in-large-view-button"
           @click=${(event: Event) => {
