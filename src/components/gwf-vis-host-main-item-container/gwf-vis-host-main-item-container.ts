@@ -21,7 +21,7 @@ export class GWFVisHostMainItemContainer extends LitElement {
       </style>
       <gwf-vis-ui-collapse>
         <div part="header" slot="header">
-          <span>${this.header}</span>
+          <span .innerHTML=${this.header ?? ""}></span>
           <button
             id="show-in-large-view-button"
             @click=${(event: Event) => {

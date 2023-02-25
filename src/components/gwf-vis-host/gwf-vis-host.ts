@@ -83,7 +83,9 @@ export class GWFVisHost extends LitElement {
         >
           <div class="inner-container leaflet-control">
             <div class="header">
-              ${this.pluginLargePresenterContentInfo?.header}
+              <span
+                .innerHTML=${this.pluginLargePresenterContentInfo?.header ?? ""}
+              ></span>
               <button
                 class="close-button"
                 @click=${this.dismissPluginLargePresenter}
