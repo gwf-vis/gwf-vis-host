@@ -50,14 +50,26 @@
   left: 50px;
   bottom: 50px;
   right: 50px;
-  border-radius: var(--leaflet-control-border-radius);
   overflow: hidden;
-  background: var(--leaflet-control-background);
   box-shadow: var(--leaflet-control-box-shadow-very-far);
 }
 
-#large-plugin-presenter[hidden] {
-  display: none;
+#large-plugin-presenter.hidden {
+  animation: show 0.3s reverse forwards;
+}
+
+#large-plugin-presenter:not(.hidden) {
+  animation: show 0.3s forwards;
+}
+
+@keyframes show {
+  0% {
+    display: none;
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 #large-plugin-presenter .close-button {

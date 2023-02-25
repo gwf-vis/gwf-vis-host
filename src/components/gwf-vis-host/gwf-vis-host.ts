@@ -81,7 +81,7 @@ export class GWFVisHost extends LitElement {
           ?hidden=${!this.pluginLargePresenterContentInfo}
           id="large-plugin-presenter"
         >
-          <div class="inner-container">
+          <div class="inner-container leaflet-control">
             <div class="header">
               ${this.pluginLargePresenterContentInfo?.header}
               <button
