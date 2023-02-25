@@ -19,7 +19,7 @@ export default class
 {
   obtainHeader = () => `<i>Sample Plugin</i> (${this.layerName ?? ""})`;
 
-  notifyLoadingCallback!: () => () => void;
+  notifyLoadingDelegate!: () => () => void;
 
   #sharedStates?: SharedStates;
   set sharedStates(value: SharedStates) {
@@ -27,7 +27,7 @@ export default class
     this.renderUI();
   }
 
-  updateSharedStatesCallback!: (sharedStates: SharedStates) => void;
+  updateSharedStatesDelegate!: (sharedStates: SharedStates) => void;
 
   layerName: string = "sample";
   layerType: LayerType = "base-layer";
@@ -39,27 +39,27 @@ export default class
 
   leaflet?: typeof leaflet;
 
-  addMapLayerCallback?: (
+  addMapLayerDelegate?: (
     layer: leaflet.Layer,
     name: string,
     type: LayerType,
     active?: boolean
   ) => void;
 
-  removeMapLayerCallback?: (layer: leaflet.Layer) => void;
+  removeMapLayerDelegate?: (layer: leaflet.Layer) => void;
 
   connectedCallback() {
     this.initializePlugin();
   }
 
-  queryDataCallback?: (
+  queryDataDelegate?: (
     dataSource: string,
     query: [number, number]
   ) => Promise<(string | number)[]>;
 
   disconnectedCallback() {
     this.#tileLayerInstance &&
-      this.removeMapLayerCallback?.(this.#tileLayerInstance);
+      this.removeMapLayerDelegate?.(this.#tileLayerInstance);
   }
 
   constructor() {
@@ -103,7 +103,7 @@ export default class
     this.shadowRoot
       ?.querySelector("#mock-loading-button")
       ?.addEventListener("click", () => {
-        const loadingEndCallback = this.notifyLoadingCallback();
+        const loadingEndCallback = this.notifyLoadingDelegate();
         const loadingTimeout = +(
           (this.shadowRoot?.querySelector("#timeout-input") as GWFVisUIInput)
             ?.value ?? ""
@@ -115,7 +115,7 @@ export default class
     this.shadowRoot
       ?.querySelector("#update-shared-states-button")
       ?.addEventListener("click", () =>
-        this.updateSharedStatesCallback({
+        this.updateSharedStatesDelegate({
           ...this.#sharedStates,
           "sample-plugin.time": new Date().toISOString(),
         })
@@ -133,7 +133,7 @@ export default class
         )?.value
           ?.split(":")
           .map((d) => +d) ?? [0, 0]) as [number, number];
-        const data = await this.queryDataCallback?.(
+        const data = await this.queryDataDelegate?.(
           `sample:${dataType}`,
           queryObject
         );
@@ -154,7 +154,7 @@ export default class
     this.renderUI();
     this.initializeMapLayer();
     this.#tileLayerInstance &&
-      this.addMapLayerCallback?.(
+      this.addMapLayerDelegate?.(
         this.#tileLayerInstance,
         this.layerName,
         this.layerType,

@@ -126,7 +126,7 @@ export class GWFVisHost extends LitElement {
       this.loadPlugins();
       this.loadingActive = false;
       this.applyToPlugins((pluginInstance) =>
-        pluginInstance.hostFirstLoadedHandler?.()
+        pluginInstance.hostFirstLoadedCallback?.()
       );
     }
   }
@@ -244,16 +244,16 @@ export class GWFVisHost extends LitElement {
       ) as GWFVisPlugin;
       const propsToBeSet = {
         ...pluginDefinition.props,
-        notifyLoadingCallback: this.notifyPluginLoadingHandler,
+        notifyLoadingDelegate: this.notifyPluginLoadingHandler,
         sharedStates: this.pluginSharedStates,
-        updateSharedStatesCallback: this.updatePluginSharedStatesHandler,
+        updateSharedStatesDelegate: this.updatePluginSharedStatesHandler,
         leaflet,
         mapInstance: this.map,
-        addMapLayerCallback: this.addMapLayerHandler,
-        removeMapLayerCallback: this.removeMapLayerHandler,
-        checkIfDataProviderRegisteredCallback:
+        addMapLayerDelegate: this.addMapLayerHandler,
+        removeMapLayerDelegate: this.removeMapLayerHandler,
+        checkIfDataProviderRegisteredDelegate:
           this.checkIfDataProviderRegisteredHandler,
-        queryDataCallback: this.queryDataHandler,
+        queryDataDelegate: this.queryDataHandler,
       } as GWFVisPluginProps;
       Object.assign(pluginInstance, propsToBeSet);
       this.registerPluginAsDataProviderIfValid(pluginInstance);
@@ -318,8 +318,9 @@ export class GWFVisHost extends LitElement {
   private registerPluginAsDataProviderIfValid(
     pluginInstance: Partial<GWFVisDataProviderPlugin<unknown, unknown>>
   ) {
-    if (pluginInstance.obtainDataProviderIdentifiers) {
-      const identifiers = pluginInstance.obtainDataProviderIdentifiers();
+    if (pluginInstance.obtainDataProviderIdentifiersCallback) {
+      const identifiers =
+        pluginInstance.obtainDataProviderIdentifiersCallback();
       identifiers?.forEach((identifier) => {
         if (this.dataIdentifierAndProviderMap.has(identifier)) {
           const errorMessage = `You cannot register multiple data providers for data identifier "${identifier}".`;
@@ -398,7 +399,7 @@ export class GWFVisHost extends LitElement {
     let [identifier, dataSourceWithoutIdentifier] = dataSource.split(/:(.+)/);
     return this.dataIdentifierAndProviderMap
       .get(identifier)
-      ?.queryData(identifier, dataSourceWithoutIdentifier, queryObject);
+      ?.queryDataCallback(identifier, dataSourceWithoutIdentifier, queryObject);
   };
 
   private presentPluginInLargeView(pluginInstance?: GWFVisPlugin) {

@@ -24,9 +24,9 @@ export default class
 {
   obtainHeader = () => "Sample Data";
 
-  obtainDataProviderIdentifiers = () => ["sample"];
+  obtainDataProviderIdentifiersCallback = () => ["sample"];
 
-  queryData = async (
+  queryDataCallback = async (
     _identifier: string,
     dataSource: string,
     queryObject: [number, number]
