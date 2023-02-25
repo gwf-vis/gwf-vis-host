@@ -24,3 +24,20 @@
 gwf-vis-ui-collapse::part(header) {
   margin: 0 var(--leaflet-control-margin);
 }
+
+#show-in-large-view-button {
+  font-size: 1.2rem;
+  appearance: none;
+  border: none;
+  outline: none;
+  background: none;
+  cursor: pointer;
+}
+
+#show-in-large-view-button:hover {
+  transform: scale(1.2);
+}
+
+#show-in-large-view-button:active {
+  transform: scale(0.9);
+}

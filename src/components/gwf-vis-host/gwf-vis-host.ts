@@ -52,6 +52,11 @@ export class GWFVisHost extends LitElement {
   private pluginSharedStates: SharedStates = {};
 
   @state() loadingActive: boolean = true;
+  @state() private pluginLargePresenterContentInfo?: {
+    header?: string;
+    pluginInstance?: GWFVisPlugin;
+    originalContainer?: HTMLElement | null;
+  };
 
   @property() config?: GWFVisHostConfig;
 
@@ -72,6 +77,25 @@ export class GWFVisHost extends LitElement {
           hidden
           ${ref(this.hiddenPluginContainerRef)}
         ></div>
+        <div
+          ?hidden=${!this.pluginLargePresenterContentInfo}
+          id="large-plugin-presenter"
+        >
+          <div class="inner-container">
+            <div class="header">
+              ${this.pluginLargePresenterContentInfo?.header}
+              <button
+                class="close-button"
+                @click=${this.dismissPluginLargePresenter}
+              >
+                🗙
+              </button>
+            </div>
+            <div class="content">
+              ${this.pluginLargePresenterContentInfo?.pluginInstance}
+            </div>
+          </div>
+        </div>
         ${when(
           this.loadingActive,
           () => html`
@@ -183,6 +207,9 @@ export class GWFVisHost extends LitElement {
         const itemContainerElement = document.createElement(
           "gwf-vis-host-main-item-container"
         ) as GWFVisHostMainItemContainer;
+        itemContainerElement.showContentInlargeViewCallback = (
+          pluginInstance
+        ) => this.presentPluginInLargeView(pluginInstance);
         itemContainerElement.header = pluginInstance.obtainHeader();
         itemContainerElement.containerProps = pluginDefinition.containerProps;
         itemContainerElement.append(pluginInstance);
@@ -193,6 +220,9 @@ export class GWFVisHost extends LitElement {
         const itemContainerElement = document.createElement(
           "gwf-vis-host-sidebar-item-container"
         ) as GWFVisHostSidebarItemContainer;
+        itemContainerElement.showContentInlargeViewCallback = (
+          pluginInstance
+        ) => this.presentPluginInLargeView(pluginInstance);
         itemContainerElement.header = pluginInstance.obtainHeader();
         itemContainerElement.containerProps = pluginDefinition.containerProps;
         itemContainerElement.append(pluginInstance);
@@ -368,4 +398,22 @@ export class GWFVisHost extends LitElement {
       .get(identifier)
       ?.queryData(identifier, dataSourceWithoutIdentifier, queryObject);
   };
+
+  private presentPluginInLargeView(pluginInstance?: GWFVisPlugin) {
+    if (this.pluginLargePresenterContentInfo) {
+      return;
+    }
+    this.pluginLargePresenterContentInfo = {
+      header: pluginInstance?.obtainHeader(),
+      pluginInstance,
+      originalContainer: pluginInstance?.parentElement,
+    };
+  }
+
+  private dismissPluginLargePresenter() {
+    this.pluginLargePresenterContentInfo?.originalContainer?.replaceChildren(
+      this.pluginLargePresenterContentInfo?.pluginInstance ?? ""
+    );
+    this.pluginLargePresenterContentInfo = undefined;
+  }
 }

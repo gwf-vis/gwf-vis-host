@@ -9,6 +9,7 @@
   --leaflet-control-backdrop-filter: blur(20px);
   --leaflet-control-box-shadow: 0 2px 5px 0 hsl(0, 0%, 0%, 0.35);
   --leaflet-control-box-shadow-far: 0 2px 10px 0 hsl(0, 0%, 0%, 0.35);
+  --leaflet-control-box-shadow-very-far: 0 2px 20px 0 hsl(0, 0%, 0%, 0.35);
   --sidebar-width: 30rem;
 
   display: block;
@@ -26,13 +27,74 @@
   z-index: 0;
 }
 
-#loading {
+#loading,
+#large-plugin-presenter {
   position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
   background: hsl(0, 0%, 0%, 0.35);
+  z-index: 9;
+}
+
+#large-plugin-presenter {
+  z-index: 99;
+}
+
+#large-plugin-presenter .inner-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  bottom: 50px;
+  right: 50px;
+  border-radius: var(--leaflet-control-border-radius);
+  overflow: hidden;
+  background: var(--leaflet-control-background);
+  box-shadow: var(--leaflet-control-box-shadow-very-far);
+}
+
+#large-plugin-presenter[hidden] {
+  display: none;
+}
+
+#large-plugin-presenter .close-button {
+  font-size: 1.2rem;
+  appearance: none;
+  border: none;
+  outline: none;
+  background: none;
+  cursor: pointer;
+  float: right;
+  cursor: pointer;
+}
+
+#large-plugin-presenter .close-button:hover {
+  transform: scale(1.2);
+}
+
+#large-plugin-presenter .close-button:active {
+  transform: scale(0.9);
+}
+
+#large-plugin-presenter .header {
+  flex: 0 0 auto;
+  padding: 0 var(--leaflet-control-padding);
+  min-height: 1.2rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  user-select: none;
+}
+
+#large-plugin-presenter .content {
+  flex: 1;
+  background: var(--leaflet-control-inner-background);
+  padding: var(--leaflet-control-padding);
+}
+
+#loading {
   z-index: 999;
 }
 

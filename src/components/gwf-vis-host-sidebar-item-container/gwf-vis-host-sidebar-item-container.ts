@@ -1,5 +1,6 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { GWFVisPlugin } from "../../utils/plugin";
 
 import styles from "./gwf-vis-host-sidebar-item-container.css?inline";
 
@@ -9,6 +10,7 @@ export class GWFVisHostSidebarItemContainer extends LitElement {
 
   @property({ reflect: true }) header?: string;
   @property() containerProps?: { slot?: string };
+  @property() showContentInlargeViewCallback?: (content: GWFVisPlugin) => void;
 
   updated() {
     this.setAttribute("slot", this.containerProps?.slot ?? "");
@@ -27,8 +29,20 @@ export class GWFVisHostSidebarItemContainer extends LitElement {
       <div
         part="header"
         slot=${this.containerProps?.slot === "top" ? "" : "header"}
-        .innerHTML=${this.header ?? ""}
-      ></div>
+      >
+        <span>${this.header}</span>
+        <button
+          id="show-in-large-view-button"
+          @click=${(event: Event) => {
+            event.preventDefault();
+            this.showContentInlargeViewCallback?.(
+              this.firstChild as GWFVisPlugin
+            );
+          }}
+        >
+          ⛶
+        </button>
+      </div>
       <div part="content">
         <slot></slot>
       </div>

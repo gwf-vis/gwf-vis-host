@@ -1,5 +1,6 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { GWFVisPlugin } from "../../utils/plugin";
 
 import styles from "./gwf-vis-host-main-item-container.css?inline";
 
@@ -9,6 +10,7 @@ export class GWFVisHostMainItemContainer extends LitElement {
 
   @property({ reflect: true }) header?: string;
   @property() containerProps?: { width?: string };
+  @property() showContentInlargeViewCallback?: (content: GWFVisPlugin) => void;
 
   render() {
     return html`
@@ -18,7 +20,20 @@ export class GWFVisHostMainItemContainer extends LitElement {
         }
       </style>
       <gwf-vis-ui-collapse>
-        <div part="header" slot="header" .innerHTML=${this.header ?? ""}></div>
+        <div part="header" slot="header">
+          <span>${this.header}</span>
+          <button
+            id="show-in-large-view-button"
+            @click=${(event: Event) => {
+              event.preventDefault();
+              this.showContentInlargeViewCallback?.(
+                this.firstChild as GWFVisPlugin
+              );
+            }}
+          >
+            ⛶
+          </button>
+        </div>
         <div part="content">
           <slot></slot>
         </div>
