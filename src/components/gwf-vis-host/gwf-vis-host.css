@@ -27,6 +27,11 @@
   z-index: 0;
 }
 
+/* To remove the unexpected outline of GeoJSON layer elements when adding a tooltip. */
+#map :focus {
+  outline: initial;
+}
+
 #loading,
 #large-plugin-presenter {
   position: fixed;
