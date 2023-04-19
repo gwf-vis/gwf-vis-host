@@ -243,6 +243,8 @@ export class GWFVisHost extends LitElement {
       const propsToBeSet = {
         ...pluginDefinition.props,
         notifyLoadingDelegate: this.notifyPluginLoadingHandler,
+        checkIfPluginIsInTheLargePresenterDelegate: () =>
+          this.checkIfPluginInLargePresenter(pluginInstance),
         sharedStates: this.pluginSharedStates,
         updateSharedStatesDelegate: this.updatePluginSharedStatesHandler,
         leaflet,
@@ -412,9 +414,15 @@ export class GWFVisHost extends LitElement {
   }
 
   private dismissPluginLargePresenter() {
-    this.pluginLargePresenterContentInfo?.originalContainer?.replaceChildren(
-      this.pluginLargePresenterContentInfo?.pluginInstance ?? ""
-    );
+    const { originalContainer, pluginInstance } =
+      this.pluginLargePresenterContentInfo ?? {};
     this.pluginLargePresenterContentInfo = undefined;
+    originalContainer?.replaceChildren(pluginInstance ?? "");
+  }
+
+  private checkIfPluginInLargePresenter(pluginInstance?: GWFVisPlugin) {
+    return (
+      this.pluginLargePresenterContentInfo?.pluginInstance === pluginInstance
+    );
   }
 }

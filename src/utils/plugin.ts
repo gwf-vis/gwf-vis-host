@@ -30,6 +30,12 @@ export interface GWFVisPlugin extends HTMLElement {
    * @returns A callback that notifies the plugin host that the current loading request has finished.
    */
   notifyLoadingDelegate?: () => () => void;
+
+  /**
+   * A delegate passed from the plugin host. Call it to check if the plugin is currently inside the large presenter.
+   * @returns `true` if the plugin is in the large presenter; `false` otherwise.
+   */
+  checkIfPluginIsInTheLargePresenterDelegate?: () => boolean;
 }
 
 export interface GWFVisPluginWithSharedStates extends GWFVisPlugin {
