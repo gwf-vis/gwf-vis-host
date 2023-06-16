@@ -4,9 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "main": "dist/gwf-vis-host.js",
-  "exports": {
-    ".": "./dist/gwf-vis-host.js"
-  },
   "types": "types/index.d.ts",
   "files": [
     "dist",
