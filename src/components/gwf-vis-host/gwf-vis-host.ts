@@ -38,6 +38,7 @@ export class GWFVisHost extends LitElement {
   private layerControl?: leaflet.Control.Layers;
   private sidebar?: leaflet.Control;
   private mapElementRef = createRef<HTMLDivElement>();
+  private loadingDialogRef = createRef<HTMLDialogElement>();
   private sidebarElement?: GWFVisHostSidebar;
   private hiddenPluginContainerRef = createRef<HTMLDivElement>();
   private pluginDefinitionAndInstanceMap = new Map<
@@ -51,7 +52,6 @@ export class GWFVisHost extends LitElement {
   private pluginLoadingPool: boolean[] = [];
   private pluginSharedStates: SharedStates = {};
 
-  @state() loadingActive: boolean = true;
   @state() private pluginLargePresenterContentInfo?: {
     header?: string;
     pluginInstance?: GWFVisPlugin;
@@ -96,16 +96,11 @@ export class GWFVisHost extends LitElement {
             </div>
           </div>
         </div>
-        ${when(
-          this.loadingActive,
-          () => html`
-            <div id="loading">
-              <div class="leaflet-control leaflet-control-layers inner">
-                <div class="spinner"></div>
-              </div>
-            </div>
-          `
-        )}
+        <dialog id="loading" ${ref(this.loadingDialogRef)}>
+          <div class="leaflet-control leaflet-control-layers inner">
+            <div class="spinner"></div>
+          </div>
+        </dialog>
       `,
       () =>
         html`<div
@@ -122,7 +117,7 @@ export class GWFVisHost extends LitElement {
       this.initializeSidebar();
       await this.importPlugins();
       this.loadPlugins();
-      this.loadingActive = false;
+      this.updateLoadingStatus();
       this.applyToPlugins((pluginInstance) =>
         pluginInstance.hostFirstLoadedCallback?.()
       );
@@ -302,9 +297,9 @@ export class GWFVisHost extends LitElement {
 
   private updateLoadingStatus() {
     if (this.pluginLoadingPool.some((item) => item)) {
-      this.loadingActive = true;
+      this.loadingDialogRef.value?.showModal();
     } else {
-      this.loadingActive = false;
+      this.loadingDialogRef.value?.close();
     }
   }
 
@@ -359,8 +354,8 @@ export class GWFVisHost extends LitElement {
     this.pluginSharedStates = sharedStates;
     this.applyToPlugins(
       (pluginInstance) =>
-        ((pluginInstance as GWFVisPluginWithSharedStates).sharedStates =
-          this.pluginSharedStates)
+      ((pluginInstance as GWFVisPluginWithSharedStates).sharedStates =
+        this.pluginSharedStates)
     );
   };
 

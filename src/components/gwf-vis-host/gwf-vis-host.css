@@ -32,7 +32,6 @@
   outline: initial;
 }
 
-#loading,
 #large-plugin-presenter {
   position: fixed;
   top: 0;
@@ -111,8 +110,8 @@
   padding: var(--leaflet-control-padding);
 }
 
-#loading {
-  z-index: 999;
+#loading::backdrop {
+  background: hsl(0, 0%, 0%, 0.35);
 }
 
 #loading > .inner {
