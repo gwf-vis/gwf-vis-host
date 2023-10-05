@@ -33,15 +33,11 @@
 }
 
 #large-plugin-presenter {
-  display: flex;
-  flex-direction: column;
   border: none;
   padding: 0;
   margin: 50px;
   height: auto;
   width: auto;
-  overflow: hidden;
-  box-shadow: var(--leaflet-control-box-shadow-very-far);
   opacity: 0;
   transition: opacity 0.3s;
 }
@@ -52,6 +48,16 @@
 
 #large-plugin-presenter::backdrop {
   background: hsl(0, 0%, 0%, 0.35);
+}
+
+#large-plugin-presenter .inner-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  overflow: hidden;
+  box-shadow: var(--leaflet-control-box-shadow-very-far);
 }
 
 #large-plugin-presenter .close-button {

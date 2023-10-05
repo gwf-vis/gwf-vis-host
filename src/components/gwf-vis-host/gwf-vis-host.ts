@@ -98,10 +98,10 @@ export class GWFVisHost extends LitElement {
         ></div>
         <dialog
           id="large-plugin-presenter"
-          class="inner-container leaflet-control"
+          class="leaflet-control"
           ${ref(this.largePresenterDialogRef)}
         >
-          <!-- <div class="inner-container leaflet-control"> -->
+          <div class="inner-container">
             <div class="header">
               ${this.pluginLargePresenterContentInfo?.header}
               <button
@@ -114,7 +114,7 @@ export class GWFVisHost extends LitElement {
             <div class="content">
               ${this.pluginLargePresenterContentInfo?.pluginInstance}
             </div>
-          <!-- </div> -->
+          </div>
         </dialog>
         <dialog id="loading" ${ref(this.loadingDialogRef)}>
           <div class="leaflet-control leaflet-control-layers inner">
