@@ -39,6 +39,7 @@ export class GWFVisHost extends LitElement {
   private sidebar?: leaflet.Control;
   private mapElementRef = createRef<HTMLDivElement>();
   private loadingDialogRef = createRef<HTMLDialogElement>();
+  private largePresenterDialogRef = createRef<HTMLDialogElement>();
   private sidebarElement?: GWFVisHostSidebar;
   private hiddenPluginContainerRef = createRef<HTMLDivElement>();
   private pluginDefinitionAndInstanceMap = new Map<
@@ -52,11 +53,29 @@ export class GWFVisHost extends LitElement {
   private pluginLoadingPool: boolean[] = [];
   private pluginSharedStates: SharedStates = {};
 
-  @state() private pluginLargePresenterContentInfo?: {
+
+  private _pluginLargePresenterContentInfo?: {
     header?: string;
     pluginInstance?: GWFVisPlugin;
     originalContainer?: HTMLElement | null;
   };
+  get pluginLargePresenterContentInfo() {
+    return this._pluginLargePresenterContentInfo;
+  }
+  @state() set pluginLargePresenterContentInfo(value: {
+    header?: string;
+    pluginInstance?: GWFVisPlugin;
+    originalContainer?: HTMLElement | null;
+  } | undefined) {
+    const oldValue = this._pluginLargePresenterContentInfo;
+    this._pluginLargePresenterContentInfo = value;
+    if (value) {
+      this.largePresenterDialogRef.value?.showModal();
+    } else {
+      this.largePresenterDialogRef.value?.close();
+    }
+    this.requestUpdate('pluginLargePresenterContentInfo', oldValue);
+  }
 
   @property() config?: GWFVisHostConfig;
 
@@ -77,11 +96,12 @@ export class GWFVisHost extends LitElement {
           hidden
           ${ref(this.hiddenPluginContainerRef)}
         ></div>
-        <div
-          ?hidden=${!this.pluginLargePresenterContentInfo}
+        <dialog
           id="large-plugin-presenter"
+          class="inner-container leaflet-control"
+          ${ref(this.largePresenterDialogRef)}
         >
-          <div class="inner-container leaflet-control">
+          <!-- <div class="inner-container leaflet-control"> -->
             <div class="header">
               ${this.pluginLargePresenterContentInfo?.header}
               <button
@@ -94,8 +114,8 @@ export class GWFVisHost extends LitElement {
             <div class="content">
               ${this.pluginLargePresenterContentInfo?.pluginInstance}
             </div>
-          </div>
-        </div>
+          <!-- </div> -->
+        </dialog>
         <dialog id="loading" ${ref(this.loadingDialogRef)}>
           <div class="leaflet-control leaflet-control-layers inner">
             <div class="spinner"></div>

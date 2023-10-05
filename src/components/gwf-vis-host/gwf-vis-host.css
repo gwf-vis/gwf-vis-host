@@ -33,47 +33,25 @@
 }
 
 #large-plugin-presenter {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: hsl(0, 0%, 0%, 0.35);
-  z-index: 9;
-}
-
-#large-plugin-presenter {
-  z-index: 99;
-}
-
-#large-plugin-presenter .inner-container {
   display: flex;
   flex-direction: column;
-  position: absolute;
-  top: 50px;
-  left: 50px;
-  bottom: 50px;
-  right: 50px;
+  border: none;
+  padding: 0;
+  margin: 50px;
+  height: auto;
+  width: auto;
   overflow: hidden;
   box-shadow: var(--leaflet-control-box-shadow-very-far);
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
-#large-plugin-presenter.hidden {
-  animation: show 0.3s reverse forwards;
+#large-plugin-presenter[open] {
+  opacity: 1;
 }
 
-#large-plugin-presenter:not(.hidden) {
-  animation: show 0.3s forwards;
-}
-
-@keyframes show {
-  0% {
-    display: none;
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+#large-plugin-presenter::backdrop {
+  background: hsl(0, 0%, 0%, 0.35);
 }
 
 #large-plugin-presenter .close-button {
