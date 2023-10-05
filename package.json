@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "main": "dist/gwf-vis-host.js",
+  "main": "dist/vga-vis-host.js",
   "types": "types/index.d.ts",
   "files": [
     "dist",
