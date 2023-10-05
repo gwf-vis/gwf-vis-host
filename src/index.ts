@@ -9,3 +9,4 @@ export * from "./components/gwf-vis-ui-input/gwf-vis-ui-input";
 
 export * from "./utils/basic";
 export * from "./utils/plugin";
+export * from "./utils/gwf-vis-host-config";
