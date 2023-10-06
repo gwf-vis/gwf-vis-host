@@ -421,18 +421,44 @@ export class GWFVisHost extends LitElement {
     if (this.pluginLargePresenterContentInfo) {
       return;
     }
-    this.pluginLargePresenterContentInfo = {
-      header: pluginInstance?.obtainHeaderCallback(),
-      pluginInstance,
-      originalContainer: pluginInstance?.parentElement,
+    const handler = () => {
+      this.pluginLargePresenterContentInfo = {
+        header: pluginInstance?.obtainHeaderCallback(),
+        pluginInstance,
+        originalContainer: pluginInstance?.parentElement,
+      };
     };
+    if ((document as any).startViewTransition) {
+      (pluginInstance?.parentElement?.style as any).viewTransitionName = 'plugin-container';
+      (document as any).startViewTransition(() => {
+        (pluginInstance?.parentElement?.style as any).viewTransitionName = null;
+        (this.largePresenterDialogRef.value?.style as any).viewTransitionName = 'plugin-container';
+        setTimeout(() => (this.largePresenterDialogRef.value?.style as any).viewTransitionName = null);
+        handler();
+      });
+      return;
+    }
+    handler();
   }
 
   private dismissPluginLargePresenter() {
     const { originalContainer, pluginInstance } =
       this.pluginLargePresenterContentInfo ?? {};
-    this.pluginLargePresenterContentInfo = undefined;
-    originalContainer?.replaceChildren(pluginInstance ?? "");
+    const handler = () => {
+      this.pluginLargePresenterContentInfo = undefined;
+      originalContainer?.replaceChildren(pluginInstance ?? "");
+    };
+    if ((document as any).startViewTransition) {
+      (this.largePresenterDialogRef.value?.style as any).viewTransitionName = 'plugin-container';
+      (document as any).startViewTransition(() => {
+        (this.largePresenterDialogRef.value?.style as any).viewTransitionName = null;
+        (originalContainer?.style as any).viewTransitionName = 'plugin-container';
+        setTimeout(() => (originalContainer?.style as any).viewTransitionName = null);
+        handler();
+      });
+      return;
+    }
+    handler();
   }
 
   private checkIfPluginInLargePresenter(pluginInstance?: GWFVisPlugin) {
