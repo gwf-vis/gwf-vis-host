@@ -18,7 +18,6 @@ import type {
 import type { GWFVisHostMainItemContainer } from "../gwf-vis-host-main-item-container/gwf-vis-host-main-item-container";
 import type { GWFVisHostSidebarItemContainer } from "../gwf-vis-host-sidebar-item-container/gwf-vis-host-sidebar-item-container";
 import {
-  type GWFVisPluginWithFileAccess,
   type GWFVisDataProviderPlugin,
   type GWFVisPlugin,
   type GWFVisPluginProps,
@@ -141,8 +140,8 @@ export class GWFVisHost extends LitElement {
           ${ref(this.directoryPermissionDialogRef)}
         >
           <div>
-            One or more loaded plugins ask for the permission to access local
-            files. Please select a root directory by click the button below.
+            The permission to access local files is needed. Please select a root
+            directory by click the button below.
           </div>
           <hr />
           <gwf-vis-ui-button
@@ -152,12 +151,6 @@ export class GWFVisHost extends LitElement {
                   window as any
                 ).showDirectoryPicker()) as FileSystemDirectoryHandle;
                 if (this.rootDirectoryHandle) {
-                  this.applyToPlugins(
-                    (pluginInstance) =>
-                      ((
-                        pluginInstance as GWFVisPluginWithFileAccess
-                      ).rootDirectoryHandle = this.rootDirectoryHandle)
-                  );
                   this.directoryPermissionDialogRef.value?.close();
                   this, this.initializeVis();
                   return;
@@ -321,6 +314,7 @@ export class GWFVisHost extends LitElement {
         checkIfDataProviderRegisteredDelegate:
           this.checkIfDataProviderRegisteredHandler,
         queryDataDelegate: this.queryDataHandler,
+        rootDirectoryHandle: this.rootDirectoryHandle,
         ...pluginDefinition.props,
       } as GWFVisPluginProps;
       Object.assign(pluginInstance, propsToBeSet);
