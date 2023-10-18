@@ -30,10 +30,6 @@ import {
 import styles from "./gwf-vis-host.css?inline";
 import leafletStyles from "../../../node_modules/leaflet/dist/leaflet.css?inline";
 
-enum InitializationTasks {
-  ASK_FOR_LOCAL_FILE_ACCESS,
-}
-
 @customElement("gwf-vis-host")
 export class GWFVisHost extends LitElement {
   static styles = [css([leafletStyles] as any), css([styles] as any)];
@@ -59,7 +55,6 @@ export class GWFVisHost extends LitElement {
   >();
   private pluginLoadingPool: boolean[] = [];
   private pluginSharedStates: SharedStates = {};
-  private pendingInitializationTasks: InitializationTasks[] = [];
 
   private _pluginLargePresenterContentInfo?: {
     header?: string;
@@ -93,6 +88,10 @@ export class GWFVisHost extends LitElement {
   updated() {
     if (!this.initialized && this.config) {
       this.initialized = true;
+      if (this.config?.accessLocalFiles) {
+        this.directoryPermissionDialogRef.value?.showModal();
+        return;
+      }
       this.initializeVis();
     }
   }
@@ -160,13 +159,7 @@ export class GWFVisHost extends LitElement {
                       ).rootDirectoryHandle = this.rootDirectoryHandle)
                   );
                   this.directoryPermissionDialogRef.value?.close();
-                  this.pendingInitializationTasks.splice(
-                    this.pendingInitializationTasks.indexOf(
-                      InitializationTasks.ASK_FOR_LOCAL_FILE_ACCESS
-                    ),
-                    1
-                  );
-                  this.completeInitializationIfNoPendingTask();
+                  this, this.initializeVis();
                   return;
                 }
                 alert(
@@ -198,13 +191,9 @@ export class GWFVisHost extends LitElement {
       await this.importPlugins();
       this.loadPlugins();
       this.updateLoadingStatus();
-      if (this.config?.accessLocalFiles) {
-        this.pendingInitializationTasks.push(
-          InitializationTasks.ASK_FOR_LOCAL_FILE_ACCESS
-        );
-        this.directoryPermissionDialogRef.value?.showModal();
-      }
-      this.completeInitializationIfNoPendingTask();
+      this.applyToPlugins((pluginInstance) =>
+        pluginInstance.hostFirstLoadedCallback?.()
+      );
     }
   }
 
@@ -540,15 +529,6 @@ export class GWFVisHost extends LitElement {
   private checkIfPluginInLargePresenter(pluginInstance?: GWFVisPlugin) {
     return (
       this.pluginLargePresenterContentInfo?.pluginInstance === pluginInstance
-    );
-  }
-
-  private completeInitializationIfNoPendingTask() {
-    if (this.pendingInitializationTasks?.length > 0) {
-      return;
-    }
-    this.applyToPlugins((pluginInstance) =>
-      pluginInstance.hostFirstLoadedCallback?.()
     );
   }
 }
