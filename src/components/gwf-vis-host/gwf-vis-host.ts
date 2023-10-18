@@ -54,6 +54,7 @@ export class GWFVisHost extends LitElement {
   >();
   private pluginLoadingPool: boolean[] = [];
   private pluginSharedStates: SharedStates = {};
+  private askForFileAccessResolver?: (value?: unknown) => void;
 
   private _pluginLargePresenterContentInfo?: {
     header?: string;
@@ -87,10 +88,6 @@ export class GWFVisHost extends LitElement {
   updated() {
     if (!this.initialized && this.config) {
       this.initialized = true;
-      if (this.config?.accessLocalFiles) {
-        this.directoryPermissionDialogRef.value?.showModal();
-        return;
-      }
       this.initializeVis();
     }
   }
@@ -152,7 +149,7 @@ export class GWFVisHost extends LitElement {
                 ).showDirectoryPicker()) as FileSystemDirectoryHandle;
                 if (this.rootDirectoryHandle) {
                   this.directoryPermissionDialogRef.value?.close();
-                  this, this.initializeVis();
+                  this.askForFileAccessResolver?.();
                   return;
                 }
                 alert(
@@ -182,6 +179,12 @@ export class GWFVisHost extends LitElement {
       this.initializeMap(this.mapElementRef.value);
       this.initializeSidebar();
       await this.importPlugins();
+      if (this.config?.accessLocalFiles) {
+        this.directoryPermissionDialogRef.value?.showModal();
+        await new Promise(
+          (resolve) => (this.askForFileAccessResolver = resolve)
+        );
+      }
       this.loadPlugins();
       this.updateLoadingStatus();
       this.applyToPlugins((pluginInstance) =>
