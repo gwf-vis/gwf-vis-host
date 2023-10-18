@@ -1,6 +1,7 @@
 import type leaflet from "leaflet";
 
 type GWFVisPluginFull = GWFVisPlugin &
+  GWFVisPluginWithFileAccess &
   GWFVisPluginWithSharedStates &
   GWFVisMapPlugin &
   GWFVisDataProviderPlugin<unknown, unknown> &
@@ -36,6 +37,13 @@ export interface GWFVisPlugin extends HTMLElement {
    * @returns `true` if the plugin is in the large presenter; `false` otherwise.
    */
   checkIfPluginIsInTheLargePresenterDelegate?: () => boolean;
+}
+
+export interface GWFVisPluginWithFileAccess extends GWFVisPlugin {
+  /**
+   * The directory handle of the root directory. Only available if the vis got the permission of accessing the root directory.
+   */
+  rootDirectoryHandle?: FileSystemDirectoryHandle;
 }
 
 export interface GWFVisPluginWithSharedStates extends GWFVisPlugin {

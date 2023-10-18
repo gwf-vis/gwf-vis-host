@@ -17,13 +17,14 @@ import type {
 } from "../../utils/gwf-vis-host-config";
 import type { GWFVisHostMainItemContainer } from "../gwf-vis-host-main-item-container/gwf-vis-host-main-item-container";
 import type { GWFVisHostSidebarItemContainer } from "../gwf-vis-host-sidebar-item-container/gwf-vis-host-sidebar-item-container";
-import type {
-  GWFVisDataProviderPlugin,
-  GWFVisPlugin,
-  GWFVisPluginProps,
-  GWFVisPluginWithSharedStates,
-  LayerType,
-  SharedStates,
+import {
+  type GWFVisPluginWithFileAccess,
+  type GWFVisDataProviderPlugin,
+  type GWFVisPlugin,
+  type GWFVisPluginProps,
+  type GWFVisPluginWithSharedStates,
+  type LayerType,
+  type SharedStates,
 } from "../../utils/plugin";
 
 import styles from "./gwf-vis-host.css?inline";
@@ -39,9 +40,11 @@ export class GWFVisHost extends LitElement {
   private sidebar?: leaflet.Control;
   private mapElementRef = createRef<HTMLDivElement>();
   private loadingDialogRef = createRef<HTMLDialogElement>();
+  private directoryPermissionDialogRef = createRef<HTMLDialogElement>();
   private largePresenterDialogRef = createRef<HTMLDialogElement>();
   private sidebarElement?: GWFVisHostSidebar;
   private hiddenPluginContainerRef = createRef<HTMLDivElement>();
+  private rootDirectoryHandle?: FileSystemDirectoryHandle;
   private pluginDefinitionAndInstanceMap = new Map<
     PluginDefinition,
     GWFVisPlugin
@@ -53,7 +56,6 @@ export class GWFVisHost extends LitElement {
   private pluginLoadingPool: boolean[] = [];
   private pluginSharedStates: SharedStates = {};
 
-
   private _pluginLargePresenterContentInfo?: {
     header?: string;
     pluginInstance?: GWFVisPlugin;
@@ -62,11 +64,15 @@ export class GWFVisHost extends LitElement {
   get pluginLargePresenterContentInfo() {
     return this._pluginLargePresenterContentInfo;
   }
-  @state() set pluginLargePresenterContentInfo(value: {
-    header?: string;
-    pluginInstance?: GWFVisPlugin;
-    originalContainer?: HTMLElement | null;
-  } | undefined) {
+  @state() set pluginLargePresenterContentInfo(
+    value:
+      | {
+          header?: string;
+          pluginInstance?: GWFVisPlugin;
+          originalContainer?: HTMLElement | null;
+        }
+      | undefined
+  ) {
     const oldValue = this._pluginLargePresenterContentInfo;
     this._pluginLargePresenterContentInfo = value;
     if (value) {
@@ -74,10 +80,10 @@ export class GWFVisHost extends LitElement {
     } else {
       this.largePresenterDialogRef.value?.close();
     }
-    this.requestUpdate('pluginLargePresenterContentInfo', oldValue);
+    this.requestUpdate("pluginLargePresenterContentInfo", oldValue);
   }
 
-  @property() config?: GWFVisHostConfig;
+  @property({ type: Object }) config?: GWFVisHostConfig;
 
   updated() {
     if (!this.initialized && this.config) {
@@ -116,10 +122,52 @@ export class GWFVisHost extends LitElement {
             </div>
           </div>
         </dialog>
-        <dialog id="loading" ${ref(this.loadingDialogRef)}>
-          <div class="leaflet-control leaflet-control-layers inner">
+        <dialog
+          id="loading"
+          class="leaflet-control"
+          ${ref(this.loadingDialogRef)}
+        >
+          <div>
             <div class="spinner"></div>
           </div>
+        </dialog>
+        <dialog
+          id="directory-permission-dialog"
+          class="leaflet-control"
+          ${ref(this.directoryPermissionDialogRef)}
+        >
+          <div>
+            One or more loaded plugins ask for the permission to access local
+            files. Please select a root directory by click the button below.
+          </div>
+          <hr />
+          <gwf-vis-ui-button
+            @click=${async () => {
+              try {
+                this.rootDirectoryHandle = (await (
+                  window as any
+                ).showDirectoryPicker()) as FileSystemDirectoryHandle;
+                if (this.rootDirectoryHandle) {
+                  this.applyToPlugins(
+                    (pluginInstance) =>
+                      ((
+                        pluginInstance as GWFVisPluginWithFileAccess
+                      ).rootDirectoryHandle = this.rootDirectoryHandle)
+                  );
+                  this.directoryPermissionDialogRef.value?.close();
+                  return;
+                }
+                alert(
+                  "Fail to get the directory permission, please try again."
+                );
+              } catch (e) {
+                alert(
+                  "Fail to get the directory permission, please try again."
+                );
+              }
+            }}
+            >Select Root Directory</gwf-vis-ui-button
+          >
         </dialog>
       `,
       () =>
@@ -138,6 +186,9 @@ export class GWFVisHost extends LitElement {
       await this.importPlugins();
       this.loadPlugins();
       this.updateLoadingStatus();
+      if (this.config?.accessLocalFiles) {
+        this.directoryPermissionDialogRef.value?.showModal();
+      }
       this.applyToPlugins((pluginInstance) =>
         pluginInstance.hostFirstLoadedCallback?.()
       );
@@ -256,7 +307,6 @@ export class GWFVisHost extends LitElement {
         pluginTagName
       ) as GWFVisPlugin;
       const propsToBeSet = {
-        ...pluginDefinition.props,
         notifyLoadingDelegate: this.notifyPluginLoadingHandler,
         checkIfPluginIsInTheLargePresenterDelegate: () =>
           this.checkIfPluginInLargePresenter(pluginInstance),
@@ -269,6 +319,7 @@ export class GWFVisHost extends LitElement {
         checkIfDataProviderRegisteredDelegate:
           this.checkIfDataProviderRegisteredHandler,
         queryDataDelegate: this.queryDataHandler,
+        ...pluginDefinition.props,
       } as GWFVisPluginProps;
       Object.assign(pluginInstance, propsToBeSet);
       this.registerPluginAsDataProviderIfValid(pluginInstance);
@@ -374,8 +425,8 @@ export class GWFVisHost extends LitElement {
     this.pluginSharedStates = sharedStates;
     this.applyToPlugins(
       (pluginInstance) =>
-      ((pluginInstance as GWFVisPluginWithSharedStates).sharedStates =
-        this.pluginSharedStates)
+        ((pluginInstance as GWFVisPluginWithSharedStates).sharedStates =
+          this.pluginSharedStates)
     );
   };
 
@@ -429,11 +480,18 @@ export class GWFVisHost extends LitElement {
       };
     };
     if ((document as any).startViewTransition) {
-      (pluginInstance?.parentElement?.style as any).viewTransitionName = 'plugin-container';
+      (pluginInstance?.parentElement?.style as any).viewTransitionName =
+        "plugin-container";
       (document as any).startViewTransition(() => {
         (pluginInstance?.parentElement?.style as any).viewTransitionName = null;
-        (this.largePresenterDialogRef.value?.style as any).viewTransitionName = 'plugin-container';
-        setTimeout(() => (this.largePresenterDialogRef.value?.style as any).viewTransitionName = null);
+        (this.largePresenterDialogRef.value?.style as any).viewTransitionName =
+          "plugin-container";
+        setTimeout(
+          () =>
+            ((
+              this.largePresenterDialogRef.value?.style as any
+            ).viewTransitionName = null)
+        );
         handler();
       });
       return;
@@ -449,11 +507,16 @@ export class GWFVisHost extends LitElement {
       originalContainer?.replaceChildren(pluginInstance ?? "");
     };
     if ((document as any).startViewTransition) {
-      (this.largePresenterDialogRef.value?.style as any).viewTransitionName = 'plugin-container';
+      (this.largePresenterDialogRef.value?.style as any).viewTransitionName =
+        "plugin-container";
       (document as any).startViewTransition(() => {
-        (this.largePresenterDialogRef.value?.style as any).viewTransitionName = null;
-        (originalContainer?.style as any).viewTransitionName = 'plugin-container';
-        setTimeout(() => (originalContainer?.style as any).viewTransitionName = null);
+        (this.largePresenterDialogRef.value?.style as any).viewTransitionName =
+          null;
+        (originalContainer?.style as any).viewTransitionName =
+          "plugin-container";
+        setTimeout(
+          () => ((originalContainer?.style as any).viewTransitionName = null)
+        );
         handler();
       });
       return;

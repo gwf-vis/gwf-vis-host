@@ -25,11 +25,30 @@
   height: 100%;
   width: 100%;
   z-index: 0;
+
+  /* To remove the unexpected outline of GeoJSON layer elements when adding a tooltip. */
+  & :focus {
+    outline: initial;
+  }
 }
 
-/* To remove the unexpected outline of GeoJSON layer elements when adding a tooltip. */
-#map :focus {
-  outline: initial;
+dialog {
+  position: fixed;
+  margin: auto;
+  outline: none;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::backdrop {
+    background: hsl(0, 0%, 0%, 0.35);
+  }
+
+  &.leaflet-control {
+    position: fixed;
+    margin: auto;
+  }
 }
 
 #large-plugin-presenter {
@@ -40,79 +59,67 @@
   width: auto;
   opacity: 0;
   transition: opacity 0.3s;
+
+  &[open] {
+    opacity: 1;
+  }
+
+  & .inner-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    overflow: hidden;
+    box-shadow: var(--leaflet-control-box-shadow-very-far);
+  }
+
+  & .header {
+    flex: 0 0 auto;
+    padding: 0 var(--leaflet-control-padding);
+    min-height: 1.2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    user-select: none;
+  }
+
+  & .close-button {
+    font-size: 1.2rem;
+    appearance: none;
+    border: none;
+    outline: none;
+    background: none;
+    cursor: pointer;
+    float: right;
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.2);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+
+  & .content {
+    flex: 1;
+    background: var(--leaflet-control-inner-background);
+    padding: var(--leaflet-control-padding);
+  }
 }
 
-#large-plugin-presenter[open] {
-  opacity: 1;
-}
-
-#large-plugin-presenter::backdrop {
-  background: hsl(0, 0%, 0%, 0.35);
-}
-
-#large-plugin-presenter .inner-container {
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  inset: 0;
-  margin: 0;
-  overflow: hidden;
-  box-shadow: var(--leaflet-control-box-shadow-very-far);
-}
-
-#large-plugin-presenter .close-button {
-  font-size: 1.2rem;
-  appearance: none;
-  border: none;
-  outline: none;
-  background: none;
-  cursor: pointer;
-  float: right;
-  cursor: pointer;
-}
-
-#large-plugin-presenter .close-button:hover {
-  transform: scale(1.2);
-}
-
-#large-plugin-presenter .close-button:active {
-  transform: scale(0.9);
-}
-
-#large-plugin-presenter .header {
-  flex: 0 0 auto;
-  padding: 0 var(--leaflet-control-padding);
-  min-height: 1.2rem;
-  font-size: 1.2rem;
-  font-weight: bold;
-  user-select: none;
-}
-
-#large-plugin-presenter .content {
-  flex: 1;
-  background: var(--leaflet-control-inner-background);
-  padding: var(--leaflet-control-padding);
-}
-
-#loading::backdrop {
-  background: hsl(0, 0%, 0%, 0.35);
-}
-
-#loading > .inner {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+#loading {
   padding: 1rem;
-}
 
-#loading .spinner {
-  border: 4px solid hsl(0, 0%, 95%);
-  border-top: 4px solid hsl(204, 70%, 53%);
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  animation: spin 2s linear infinite;
+  & .spinner {
+    border: 4px solid hsl(0, 0%, 95%);
+    border-top: 4px solid hsl(204, 70%, 53%);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 2s linear infinite;
+  }
 }
 
 @keyframes spin {

@@ -10,6 +10,7 @@ export type PluginDefinition = {
 export interface GWFVisHostConfig {
   fileBasePath?: string;
   preferCanvas?: boolean;
+  accessLocalFiles?: boolean;
   view?: MapView;
   imports?: { [name: string]: string };
   plugins?: PluginDefinition[];
