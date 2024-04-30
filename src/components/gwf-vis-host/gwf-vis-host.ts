@@ -85,6 +85,13 @@ export class GWFVisHost extends LitElement {
 
   @property({ type: Object }) config?: GWFVisHostConfig;
 
+  @property({
+    type: Boolean,
+    attribute: "allow-modifying-page-info",
+    reflect: true,
+  })
+  allowModifyingPageInfo = false;
+
   updated() {
     if (!this.initialized && this.config) {
       this.initialized = true;
@@ -175,6 +182,16 @@ export class GWFVisHost extends LitElement {
   }
 
   private async initializeVis() {
+    if (this.allowModifyingPageInfo) {
+      if (this.config?.pageTitle) {
+        document.title = this.config.pageTitle;
+      }
+      if (this.config?.favicon) {
+        document.head
+          .querySelector('link[rel~="icon"]')
+          ?.setAttribute("href", this.config.favicon);
+      }
+    }
     if (!this.map && this.mapElementRef.value) {
       this.initializeMap(this.mapElementRef.value);
       this.initializeSidebar();

@@ -1,5 +1,7 @@
 {
   "fileBasePath": "",
+  "pageTitle": "Foo",
+  "favicon": "https://gwf.usask.ca/core-modelling/images/gwf_globe.png",
   "preferCanvas": false,
   "accessLocalFiles": true,
   "view": {
