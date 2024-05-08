@@ -4,7 +4,6 @@ import { ref, createRef } from "lit/directives/ref.js";
 import { when } from "lit/directives/when.js";
 import leaflet from "leaflet";
 
-import { obtainActualUrl } from "../../utils/url";
 import importPlugin, {
   pluginNameAndTagNameMap,
 } from "../../utils/import-plugin";
@@ -91,6 +90,14 @@ export class GWFVisHost extends LitElement {
     reflect: true,
   })
   allowModifyingPageInfo = false;
+
+  @property({
+    type: String,
+    attribute: "config-base-url",
+    reflect: true,
+  })
+  @property()
+  configBaseUrl?: string;
 
   updated() {
     if (!this.initialized && this.config) {
@@ -335,6 +342,7 @@ export class GWFVisHost extends LitElement {
           this.checkIfDataProviderRegisteredHandler,
         queryDataDelegate: this.queryDataHandler,
         rootDirectoryHandle: this.rootDirectoryHandle,
+        configBaseUrl: this.configBaseUrl,
         ...pluginDefinition.props,
       } as GWFVisPluginProps;
       Object.assign(pluginInstance, propsToBeSet);
@@ -347,10 +355,8 @@ export class GWFVisHost extends LitElement {
   private async importPlugins() {
     try {
       for (const [name, url] of Object.entries(this.config?.imports ?? {})) {
-        const actualUrl = obtainActualUrl(
-          url,
-          this.config?.fileBasePath ?? "."
-        );
+        const actualUrl = new URL(url, this.configBaseUrl ?? document.baseURI)
+          .href;
         await importPlugin(name, actualUrl);
       }
     } catch (e: any) {

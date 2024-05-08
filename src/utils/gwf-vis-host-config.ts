@@ -8,7 +8,6 @@ export type PluginDefinition = {
 };
 
 export interface GWFVisHostConfig {
-  fileBasePath?: string;
   favicon?: string;
   pageTitle?: string;
   preferCanvas?: boolean;

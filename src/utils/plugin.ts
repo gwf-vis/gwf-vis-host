@@ -37,6 +37,11 @@ export interface GWFVisPlugin extends HTMLElement {
    * @returns `true` if the plugin is in the large presenter; `false` otherwise.
    */
   checkIfPluginIsInTheLargePresenterDelegate?: () => boolean;
+
+  /**
+   * The base URL used for the current config. It can be used to determine the real URL of a relative URL.
+   */
+  configBaseUrl?: string;
 }
 
 export interface GWFVisPluginWithFileAccess extends GWFVisPlugin {
