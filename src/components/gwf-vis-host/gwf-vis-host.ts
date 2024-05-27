@@ -211,9 +211,11 @@ export class GWFVisHost extends LitElement {
       }
       this.loadPlugins();
       this.updateLoadingStatus();
-      this.applyToPlugins((pluginInstance) =>
-        pluginInstance.hostFirstLoadedCallback?.()
-      );
+      setTimeout(() => {
+        this.applyToPlugins((pluginInstance) =>
+          pluginInstance.hostFirstLoadedCallback?.()
+        );
+      });
     }
   }
 
