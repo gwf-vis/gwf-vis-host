@@ -385,6 +385,7 @@ export class GWFVisHost extends LitElement {
     element.addEventListener("mouseout", () => {
       this.map?.dragging.enable();
       this.map?.scrollWheelZoom.enable();
+      this.map?.doubleClickZoom.enable();
     });
   }
 
