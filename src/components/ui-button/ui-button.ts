@@ -3,12 +3,12 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { when } from "lit/directives/when.js";
 
-import styles from "./gwf-vis-ui-button.css?inline";
+import styles from "./ui-button.css?inline";
 
 export type ButtonVariant = "solid" | "hollow" | "clear" | "round" | "link";
 
-@customElement("gwf-vis-ui-button")
-export class GWFVisUIButton extends LitElement {
+@customElement("vga-ui-button")
+export class VGAUIButton extends LitElement {
   static styles = [css([styles] as any)];
 
   @property({ reflect: true }) variant: ButtonVariant = "solid";

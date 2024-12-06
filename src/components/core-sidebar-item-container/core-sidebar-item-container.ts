@@ -1,16 +1,16 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { GWFVisPlugin } from "../../utils/plugin";
+import { VGAPlugin } from "../../utils/plugin";
 
-import styles from "./gwf-vis-host-sidebar-item-container.css?inline";
+import styles from "./core-sidebar-item-container.css?inline";
 
-@customElement("gwf-vis-host-sidebar-item-container")
-export class GWFVisHostSidebarItemContainer extends LitElement {
+@customElement("vga-core-sidebar-item-container")
+export class VGACoreSidebarItemContainer extends LitElement {
   static styles = [css([styles] as any)];
 
   @property({ reflect: true }) header?: string;
   @property() containerProps?: { slot?: string };
-  @property() showContentInlargeViewCallback?: (content: GWFVisPlugin) => void;
+  @property() showContentInlargeViewCallback?: (content: VGAPlugin) => void;
 
   updated() {
     this.setAttribute("slot", this.containerProps?.slot ?? "");
@@ -20,7 +20,7 @@ export class GWFVisHostSidebarItemContainer extends LitElement {
     return this.containerProps?.slot === "top"
       ? this.renderContent()
       : html`
-          <gwf-vis-ui-collapse>${this.renderContent()}</gwf-vis-ui-collapse>
+          <vga-ui-collapse>${this.renderContent()}</vga-ui-collapse>
         `;
   }
 
@@ -35,9 +35,7 @@ export class GWFVisHostSidebarItemContainer extends LitElement {
           id="show-in-large-view-button"
           @click=${(event: Event) => {
             event.preventDefault();
-            this.showContentInlargeViewCallback?.(
-              this.firstChild as GWFVisPlugin
-            );
+            this.showContentInlargeViewCallback?.(this.firstChild as VGAPlugin);
           }}
         >
           ⛶

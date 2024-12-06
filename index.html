@@ -5,20 +5,20 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="./vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GWF Vis</title>
+    <title>VGA Core</title>
     <link rel="stylesheet" href="./src/index.css" />
     <script type="module" src="./src/index.ts"></script>
   </head>
 
   <body>
-    <gwf-vis-host allow-modifying-page-info></gwf-vis-host>
+    <vga-core allow-modifying-page-info></vga-core>
     <script>
       async function main() {
-        const visHost = document.querySelector("gwf-vis-host");
+        const vgaCore = document.querySelector("vga-core");
         const config = await fetch("./src/assets/sample.json").then(
           (response) => response.json()
         );
-        visHost.config = config;
+        vgaCore.config = config;
       }
       main();
     </script>

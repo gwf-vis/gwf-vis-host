@@ -1,10 +1,10 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import styles from "./gwf-vis-host-sidebar.css?inline";
+import styles from "./core-sidebar.css?inline";
 
-@customElement("gwf-vis-host-sidebar")
-export class GWFVisHostSidebar extends LitElement {
+@customElement("vga-core-sidebar")
+export class VGACoreSidebar extends LitElement {
   static styles = [css([styles] as any)];
 
   @property({ type: Boolean, reflect: true }) active: boolean = true;

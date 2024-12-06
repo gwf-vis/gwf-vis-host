@@ -2,12 +2,12 @@ import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import styles from "./gwf-vis-ui-input.css?inline";
+import styles from "./ui-input.css?inline";
 
 export type InputType = "text" | "number" | "password";
 
-@customElement("gwf-vis-ui-input")
-export class GWFVisUIInput extends LitElement {
+@customElement("vga-ui-input")
+export class VGAUIInput extends LitElement {
   static styles = [css([styles] as any)];
 
   @property({ reflect: true }) type: InputType = "text";

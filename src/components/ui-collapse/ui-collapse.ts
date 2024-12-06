@@ -1,10 +1,10 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import styles from "./gwf-vis-ui-collapse.css?inline";
+import styles from "./ui-collapse.css?inline";
 
-@customElement("gwf-vis-ui-collapse")
-export class GWFVisUICollapse extends LitElement {
+@customElement("vga-ui-collapse")
+export class VGAUICollapse extends LitElement {
   static styles = [css([styles] as any)];
 
   @property({ type: Boolean, reflect: true }) collapsed: boolean = false;

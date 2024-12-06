@@ -9,27 +9,24 @@ import importPlugin, {
 } from "../../utils/import-plugin";
 
 import type { MapView } from "../../utils/basic";
-import type { GWFVisHostSidebar } from "../gwf-vis-host-sidebar/gwf-vis-host-sidebar";
-import type {
-  GWFVisHostConfig,
-  PluginDefinition,
-} from "../../utils/gwf-vis-host-config";
-import type { GWFVisHostMainItemContainer } from "../gwf-vis-host-main-item-container/gwf-vis-host-main-item-container";
-import type { GWFVisHostSidebarItemContainer } from "../gwf-vis-host-sidebar-item-container/gwf-vis-host-sidebar-item-container";
+import type { VGACoreSidebar } from "../core-sidebar/core-sidebar";
+import type { VGAConfig, PluginDefinition } from "../../utils/vga-config";
+import type { VGACoreMainItemContainer } from "../core-main-item-container/core-main-item-container";
+import type { VGACoreSidebarItemContainer } from "../core-sidebar-item-container/core-sidebar-item-container";
 import {
-  type GWFVisDataProviderPlugin,
-  type GWFVisPlugin,
-  type GWFVisPluginProps,
-  type GWFVisPluginWithSharedStates,
+  type VGADataProviderPlugin,
+  type VGAPlugin,
+  type VGAPluginProps,
+  type VGAPluginWithSharedStates,
   type LayerType,
   type SharedStates,
 } from "../../utils/plugin";
 
-import styles from "./gwf-vis-host.css?inline";
+import styles from "./core.css?inline";
 import leafletStyles from "../../../node_modules/leaflet/dist/leaflet.css?inline";
 
-@customElement("gwf-vis-host")
-export class GWFVisHost extends LitElement {
+@customElement("vga-core")
+export class VGACore extends LitElement {
   static styles = [css([leafletStyles] as any), css([styles] as any)];
 
   private initialized = false;
@@ -40,16 +37,16 @@ export class GWFVisHost extends LitElement {
   private loadingDialogRef = createRef<HTMLDialogElement>();
   private directoryPermissionDialogRef = createRef<HTMLDialogElement>();
   private largePresenterDialogRef = createRef<HTMLDialogElement>();
-  private sidebarElement?: GWFVisHostSidebar;
+  private sidebarElement?: VGACoreSidebar;
   private hiddenPluginContainerRef = createRef<HTMLDivElement>();
   private rootDirectoryHandle?: FileSystemDirectoryHandle;
   private pluginDefinitionAndInstanceMap = new Map<
     PluginDefinition,
-    GWFVisPlugin
+    VGAPlugin
   >();
   private dataIdentifierAndProviderMap = new Map<
     string,
-    GWFVisDataProviderPlugin<unknown, unknown>
+    VGADataProviderPlugin<unknown, unknown>
   >();
   private pluginLoadingPool: boolean[] = [];
   private pluginSharedStates: SharedStates = {};
@@ -57,7 +54,7 @@ export class GWFVisHost extends LitElement {
 
   private _pluginLargePresenterContentInfo?: {
     header?: string;
-    pluginInstance?: GWFVisPlugin;
+    pluginInstance?: VGAPlugin;
     originalContainer?: HTMLElement | null;
   };
   get pluginLargePresenterContentInfo() {
@@ -67,7 +64,7 @@ export class GWFVisHost extends LitElement {
     value:
       | {
           header?: string;
-          pluginInstance?: GWFVisPlugin;
+          pluginInstance?: VGAPlugin;
           originalContainer?: HTMLElement | null;
         }
       | undefined
@@ -82,7 +79,7 @@ export class GWFVisHost extends LitElement {
     this.requestUpdate("pluginLargePresenterContentInfo", oldValue);
   }
 
-  @property({ type: Object }) config?: GWFVisHostConfig;
+  @property({ type: Object }) config?: VGAConfig;
 
   @property({
     type: Boolean,
@@ -155,7 +152,7 @@ export class GWFVisHost extends LitElement {
             directory by click the button below.
           </div>
           <hr />
-          <gwf-vis-ui-button
+          <vga-ui-button
             @click=${async () => {
               try {
                 this.rootDirectoryHandle = (await (
@@ -175,7 +172,7 @@ export class GWFVisHost extends LitElement {
                 );
               }
             }}
-            >Select Root Directory</gwf-vis-ui-button
+            >Select Root Directory</vga-ui-button
           >
         </dialog>
       `,
@@ -231,8 +228,8 @@ export class GWFVisHost extends LitElement {
     const SidebarControl = leaflet.Control.extend({
       onAdd: () => {
         this.sidebarElement = leaflet.DomUtil.create(
-          "gwf-vis-host-sidebar"
-        ) as GWFVisHostSidebar;
+          "vga-core-sidebar"
+        ) as VGACoreSidebar;
         this.sidebarElement.classList.add("leaflet-control-layers");
         this.stopEventPropagationToTheMapElement(this.sidebarElement);
         return this.sidebarElement;
@@ -284,7 +281,7 @@ export class GWFVisHost extends LitElement {
 
   private assignPluginInstanceIntoContainer(
     pluginDefinition: PluginDefinition,
-    pluginInstance: GWFVisPlugin
+    pluginInstance: VGAPlugin
   ) {
     switch (pluginDefinition.container) {
       case "hidden": {
@@ -293,8 +290,8 @@ export class GWFVisHost extends LitElement {
       }
       case "main": {
         const itemContainerElement = document.createElement(
-          "gwf-vis-host-main-item-container"
-        ) as GWFVisHostMainItemContainer;
+          "vga-core-main-item-container"
+        ) as VGACoreMainItemContainer;
         itemContainerElement.showContentInlargeViewCallback = (
           pluginInstance
         ) => this.presentPluginInLargeView(pluginInstance);
@@ -306,8 +303,8 @@ export class GWFVisHost extends LitElement {
       }
       case "sidebar": {
         const itemContainerElement = document.createElement(
-          "gwf-vis-host-sidebar-item-container"
-        ) as GWFVisHostSidebarItemContainer;
+          "vga-core-sidebar-item-container"
+        ) as VGACoreSidebarItemContainer;
         itemContainerElement.showContentInlargeViewCallback = (
           pluginInstance
         ) => this.presentPluginInLargeView(pluginInstance);
@@ -325,9 +322,7 @@ export class GWFVisHost extends LitElement {
   private createPluginInstance(pluginDefinition: PluginDefinition) {
     const pluginTagName = pluginNameAndTagNameMap.get(pluginDefinition.import);
     if (pluginTagName) {
-      const pluginInstance = document.createElement(
-        pluginTagName
-      ) as GWFVisPlugin;
+      const pluginInstance = document.createElement(pluginTagName) as VGAPlugin;
       const propsToBeSet = {
         notifyLoadingDelegate: this.notifyPluginLoadingHandler,
         checkIfPluginIsInTheLargePresenterDelegate: () =>
@@ -344,7 +339,7 @@ export class GWFVisHost extends LitElement {
         rootDirectoryHandle: this.rootDirectoryHandle,
         configBaseUrl: this.configBaseUrl,
         ...pluginDefinition.props,
-      } as GWFVisPluginProps;
+      } as VGAPluginProps;
       Object.assign(pluginInstance, propsToBeSet);
       this.registerPluginAsDataProviderIfValid(pluginInstance);
       return pluginInstance;
@@ -397,7 +392,7 @@ export class GWFVisHost extends LitElement {
     }
   }
 
-  private applyToPlugins(callback: (pluginInstance: GWFVisPlugin) => void) {
+  private applyToPlugins(callback: (pluginInstance: VGAPlugin) => void) {
     for (let pluginInstance of this.pluginDefinitionAndInstanceMap.values() ??
       []) {
       callback(pluginInstance);
@@ -405,7 +400,7 @@ export class GWFVisHost extends LitElement {
   }
 
   private registerPluginAsDataProviderIfValid(
-    pluginInstance: Partial<GWFVisDataProviderPlugin<unknown, unknown>>
+    pluginInstance: Partial<VGADataProviderPlugin<unknown, unknown>>
   ) {
     if (pluginInstance.obtainDataProviderIdentifiersCallback) {
       const identifiers =
@@ -423,7 +418,7 @@ export class GWFVisHost extends LitElement {
         }
         this.dataIdentifierAndProviderMap.set(
           identifier,
-          pluginInstance as GWFVisDataProviderPlugin<unknown, unknown>
+          pluginInstance as VGADataProviderPlugin<unknown, unknown>
         );
       });
     }
@@ -448,7 +443,7 @@ export class GWFVisHost extends LitElement {
     this.pluginSharedStates = sharedStates;
     this.applyToPlugins(
       (pluginInstance) =>
-        ((pluginInstance as GWFVisPluginWithSharedStates).sharedStates =
+        ((pluginInstance as VGAPluginWithSharedStates).sharedStates =
           this.pluginSharedStates)
     );
   };
@@ -491,7 +486,7 @@ export class GWFVisHost extends LitElement {
       ?.queryDataCallback(identifier, dataSourceWithoutIdentifier, queryObject);
   };
 
-  private presentPluginInLargeView(pluginInstance?: GWFVisPlugin) {
+  private presentPluginInLargeView(pluginInstance?: VGAPlugin) {
     if (this.pluginLargePresenterContentInfo) {
       return;
     }
@@ -547,7 +542,7 @@ export class GWFVisHost extends LitElement {
     handler();
   }
 
-  private checkIfPluginInLargePresenter(pluginInstance?: GWFVisPlugin) {
+  private checkIfPluginInLargePresenter(pluginInstance?: VGAPlugin) {
     return (
       this.pluginLargePresenterContentInfo?.pluginInstance === pluginInstance
     );

@@ -3,7 +3,7 @@
   "pageTitle": "Foo",
   "favicon": "https://gwf.usask.ca/core-modelling/images/gwf_globe.png",
   "preferCanvas": false,
-  "accessLocalFiles": true,
+  "accessLocalFiles": false,
   "view": {
     "center": [0, 0],
     "zoom": 3

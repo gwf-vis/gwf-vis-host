@@ -21,7 +21,7 @@
   padding: var(--leaflet-control-padding);
 }
 
-gwf-vis-ui-collapse::part(header) {
+vga-ui-collapse::part(header) {
   margin: 0 var(--leaflet-control-margin);
 }
 

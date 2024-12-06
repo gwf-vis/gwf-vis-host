@@ -1,16 +1,16 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { GWFVisPlugin } from "../../utils/plugin";
+import { VGAPlugin } from "../../utils/plugin";
 
-import styles from "./gwf-vis-host-main-item-container.css?inline";
+import styles from "./core-main-item-container.css?inline";
 
-@customElement("gwf-vis-host-main-item-container")
-export class GWFVisHostMainItemContainer extends LitElement {
+@customElement("vga-core-main-item-container")
+export class VGACoreMainItemContainer extends LitElement {
   static styles = [css([styles] as any)];
 
   @property({ reflect: true }) header?: string;
   @property() containerProps?: { width?: string };
-  @property() showContentInlargeViewCallback?: (content: GWFVisPlugin) => void;
+  @property() showContentInlargeViewCallback?: (content: VGAPlugin) => void;
 
   render() {
     return html`
@@ -19,7 +19,7 @@ export class GWFVisHostMainItemContainer extends LitElement {
           width: ${this.containerProps?.width ?? "auto"};
         }
       </style>
-      <gwf-vis-ui-collapse>
+      <vga-ui-collapse>
         <div part="header" slot="header">
           <span>${this.header}</span>
           <button
@@ -27,7 +27,7 @@ export class GWFVisHostMainItemContainer extends LitElement {
             @click=${(event: Event) => {
               event.preventDefault();
               this.showContentInlargeViewCallback?.(
-                this.firstChild as GWFVisPlugin
+                this.firstChild as VGAPlugin
               );
             }}
           >
@@ -37,7 +37,7 @@ export class GWFVisHostMainItemContainer extends LitElement {
         <div part="content">
           <slot></slot>
         </div>
-      </gwf-vis-ui-collapse>
+      </vga-ui-collapse>
     `;
   }
 }

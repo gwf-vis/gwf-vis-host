@@ -1,4 +1,4 @@
-import type { GWFVisPlugin, GWFVisDataProviderPlugin } from "../index";
+import type { VGAPlugin, VGADataProviderPlugin } from "../index";
 
 const data: any = {
   number: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -19,8 +19,8 @@ const data: any = {
 export default class
   extends HTMLElement
   implements
-    GWFVisPlugin,
-    GWFVisDataProviderPlugin<[number, number], (string | number)[]>
+    VGAPlugin,
+    VGADataProviderPlugin<[number, number], (string | number)[]>
 {
   obtainHeaderCallback = () => "Sample Data";
 

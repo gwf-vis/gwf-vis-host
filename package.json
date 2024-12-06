@@ -1,9 +1,9 @@
 {
-  "name": "vga-vis-host",
+  "name": "vga-core",
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "main": "dist/vga-vis-host.js",
+  "main": "dist/vga-core.js",
   "types": "types/index.d.ts",
   "files": [
     "dist",

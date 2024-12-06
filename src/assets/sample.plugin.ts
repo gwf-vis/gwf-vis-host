@@ -1,10 +1,10 @@
 import type {
   leaflet,
-  GWFVisPlugin,
-  GWFVisPluginWithSharedStates,
-  GWFVisMapPlugin,
-  GWFVisPluginWithData,
-  GWFVisUIInput,
+  VGAPlugin,
+  VGAPluginWithSharedStates,
+  VGAVisMapPlugin,
+  VGAPluginWithData,
+  VGAUIInput,
   SharedStates,
   LayerType,
 } from "../index";
@@ -12,10 +12,10 @@ import type {
 export default class
   extends HTMLElement
   implements
-    GWFVisPlugin,
-    GWFVisPluginWithSharedStates,
-    GWFVisMapPlugin,
-    GWFVisPluginWithData<[number, number], (string | number)[]>
+    VGAPlugin,
+    VGAPluginWithSharedStates,
+    VGAVisMapPlugin,
+    VGAPluginWithData<[number, number], (string | number)[]>
 {
   obtainHeaderCallback = () => `Sample Plugin (${this.layerName ?? ""})`;
 
@@ -74,15 +74,15 @@ export default class
         style="min-height: 30rem; width: 100%; box-sizing: border-box;"
         >
         <label for="timeout-input">What is the timeout of the loading?</label>
-        <gwf-vis-ui-input id="timeout-input" type="number" value="2000"></gwf-vis-ui-input>
-        <gwf-vis-ui-button id="mock-loading-button">Click me to mock a loading</gwf-vis-ui-button>
+        <vga-ui-input id="timeout-input" type="number" value="2000"></vga-ui-input>
+        <vga-ui-button id="mock-loading-button">Click me to mock a loading</vga-ui-button>
         <hr/>
         <span>${this.#sharedStates?.["sample-plugin.time"] ?? "N/A"}</span>
         <br/>
-        <gwf-vis-ui-button id="update-shared-states-button">Update shared states</gwf-vis-ui-button>
+        <vga-ui-button id="update-shared-states-button">Update shared states</vga-ui-button>
         <hr/>
         <label for="data-range-input">What is range of the data to query?</label>
-        <gwf-vis-ui-input id="data-range-input" type="text" value="0:10"></gwf-vis-ui-input>
+        <vga-ui-input id="data-range-input" type="text" value="0:10"></vga-ui-input>
         <br/>
         <label for="data-type-select">What is type of the data to query?</label>
         <select id="data-type-select">
@@ -90,14 +90,14 @@ export default class
           <option>string</option>
         </select>
         <br/>
-        <gwf-vis-ui-button id="data-query-button">Query data</gwf-vis-ui-button>
+        <vga-ui-button id="data-query-button">Query data</vga-ui-button>
         <p id="query-result"><p>
         <hr/>
-        <gwf-vis-ui-button disabled>Disabled</gwf-vis-ui-button>
-        <gwf-vis-ui-button variant="hollow">Hollow</gwf-vis-ui-button>
-        <gwf-vis-ui-button variant="clear">Clear</gwf-vis-ui-button>
-        <gwf-vis-ui-button variant="round">Round</gwf-vis-ui-button>
-        <gwf-vis-ui-button variant="link" href="https://github.com">Link</gwf-vis-ui-button>
+        <vga-ui-button disabled>Disabled</vga-ui-button>
+        <vga-ui-button variant="hollow">Hollow</vga-ui-button>
+        <vga-ui-button variant="clear">Clear</vga-ui-button>
+        <vga-ui-button variant="round">Round</vga-ui-button>
+        <vga-ui-button variant="link" href="https://github.com">Link</vga-ui-button>
       </div>
     `);
     this.shadowRoot
@@ -105,7 +105,7 @@ export default class
       ?.addEventListener("click", () => {
         const loadingEndCallback = this.notifyLoadingDelegate();
         const loadingTimeout = +(
-          (this.shadowRoot?.querySelector("#timeout-input") as GWFVisUIInput)
+          (this.shadowRoot?.querySelector("#timeout-input") as VGAUIInput)
             ?.value ?? ""
         );
         setTimeout(() => {
@@ -129,7 +129,7 @@ export default class
           ) as HTMLSelectElement
         )?.value;
         const queryObject = ((
-          this.shadowRoot?.querySelector("#data-range-input") as GWFVisUIInput
+          this.shadowRoot?.querySelector("#data-range-input") as VGAUIInput
         )?.value
           ?.split(":")
           .map((d) => +d) ?? [0, 0]) as [number, number];

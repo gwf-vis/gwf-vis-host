@@ -1,12 +1,12 @@
-export * from "./components/gwf-vis-host/gwf-vis-host";
-export * from "./components/gwf-vis-host-sidebar/gwf-vis-host-sidebar";
-export * from "./components/gwf-vis-host-sidebar-item-container/gwf-vis-host-sidebar-item-container";
-export * from "./components/gwf-vis-host-main-item-container/gwf-vis-host-main-item-container";
+export * from "./components/core/core";
+export * from "./components/core-sidebar/core-sidebar";
+export * from "./components/core-sidebar-item-container/core-sidebar-item-container";
+export * from "./components/core-main-item-container/core-main-item-container";
 
-export * from "./components/gwf-vis-ui-button/gwf-vis-ui-button";
-export * from "./components/gwf-vis-ui-collapse/gwf-vis-ui-collapse";
-export * from "./components/gwf-vis-ui-input/gwf-vis-ui-input";
+export * from "./components/ui-button/ui-button";
+export * from "./components/ui-collapse/ui-collapse";
+export * from "./components/ui-input/ui-input";
 
 export * from "./utils/basic";
 export * from "./utils/plugin";
-export * from "./utils/gwf-vis-host-config";
+export * from "./utils/vga-config";

@@ -1,19 +1,19 @@
 import type leaflet from "leaflet";
 
-type GWFVisPluginFull = GWFVisPlugin &
-  GWFVisPluginWithFileAccess &
-  GWFVisPluginWithSharedStates &
-  GWFVisMapPlugin &
-  GWFVisDataProviderPlugin<unknown, unknown> &
-  GWFVisPluginWithData<unknown, unknown>;
+type VGAPluginFull = VGAPlugin &
+  VGAPluginWithFileAccess &
+  VGAPluginWithSharedStates &
+  VGAVisMapPlugin &
+  VGADataProviderPlugin<unknown, unknown> &
+  VGAPluginWithData<unknown, unknown>;
 
-export type GWFVisPluginProps = Partial<GWFVisPluginFull> & Record<string, any>;
+export type VGAPluginProps = Partial<VGAPluginFull> & Record<string, any>;
 
 export type SharedStates = Record<string, any>;
 
 export type LayerType = "base-layer" | "overlay";
 
-export interface GWFVisPlugin extends HTMLElement {
+export interface VGAPlugin extends HTMLElement {
   /**
    * Will be called when the host needs to obtain this plugin's header.
    * @returns A string of the header.
@@ -44,14 +44,14 @@ export interface GWFVisPlugin extends HTMLElement {
   configBaseUrl?: string;
 }
 
-export interface GWFVisPluginWithFileAccess extends GWFVisPlugin {
+export interface VGAPluginWithFileAccess extends VGAPlugin {
   /**
    * The directory handle of the root directory. Only available if the vis got the permission of accessing the root directory.
    */
   rootDirectoryHandle?: FileSystemDirectoryHandle;
 }
 
-export interface GWFVisPluginWithSharedStates extends GWFVisPlugin {
+export interface VGAPluginWithSharedStates extends VGAPlugin {
   /**
    * A key-value based shared state dictionary passed from the plugin host.
    */
@@ -64,7 +64,7 @@ export interface GWFVisPluginWithSharedStates extends GWFVisPlugin {
   updateSharedStatesDelegate?: (sharedStates: SharedStates) => void;
 }
 
-export interface GWFVisMapPlugin extends GWFVisPlugin {
+export interface VGAVisMapPlugin extends VGAPlugin {
   /**
    * The `leaflet` instance passed from the plugin host..
    */
@@ -93,7 +93,7 @@ export interface GWFVisMapPlugin extends GWFVisPlugin {
   removeMapLayerDelegate?: (layer: leaflet.Layer) => void;
 }
 
-export interface GWFVisDataProviderPlugin<TQuery, TData> extends GWFVisPlugin {
+export interface VGADataProviderPlugin<TQuery, TData> extends VGAPlugin {
   /**
    * Will be called when the host needs to obtain the plugin's data provider identifiers.
    * @returns An array of string of the data provider's identifiers.
@@ -115,7 +115,7 @@ export interface GWFVisDataProviderPlugin<TQuery, TData> extends GWFVisPlugin {
   ) => Promise<TData>;
 }
 
-export interface GWFVisPluginWithData<TQuery, TData> extends GWFVisPlugin {
+export interface VGAPluginWithData<TQuery, TData> extends VGAPlugin {
   /**
    * A delegate passed from the plugin host. Call it to check if a corresponding data provider is registerd.
    * @param identifier - A string identifier for data type.

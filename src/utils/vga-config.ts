@@ -7,7 +7,7 @@ export type PluginDefinition = {
   props?: any;
 };
 
-export interface GWFVisHostConfig {
+export interface VGAConfig {
   favicon?: string;
   pageTitle?: string;
   preferCanvas?: boolean;

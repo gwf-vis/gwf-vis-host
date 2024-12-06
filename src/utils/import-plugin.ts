@@ -1,7 +1,7 @@
-import type { GWFVisPlugin } from "./plugin";
+import type { VGAPlugin } from "./plugin";
 
-export type GWFVisPluginModule = {
-  default: { new (): GWFVisPlugin };
+export type VGAPluginModule = {
+  default: { new (): VGAPlugin };
 };
 
 export const pluginNameAndTagNameMap = new Map<string, string>();
@@ -9,10 +9,10 @@ export const pluginNameAndTagNameMap = new Map<string, string>();
 export default async function importPlugin(name: string, url: string) {
   const pluginModule = (await import(
     /* @vite-ignore */ url
-  )) as GWFVisPluginModule;
+  )) as VGAPluginModule;
   const plugin = pluginModule?.default;
   const uniqueId = pluginNameAndTagNameMap.size;
-  const tagName = `gwf-vis-plugin-${convertToDashCase(name)}-${uniqueId}`;
+  const tagName = `vga-plugin-${convertToDashCase(name)}-${uniqueId}`;
   if (definePlugin(tagName, plugin)) {
     pluginNameAndTagNameMap.set(name, tagName);
   }
