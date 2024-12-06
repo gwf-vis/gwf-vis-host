@@ -2,7 +2,7 @@ import type {
   leaflet,
   VGAPlugin,
   VGAPluginWithSharedStates,
-  VGAVisMapPlugin,
+  VGAMapPlugin,
   VGAPluginWithData,
   VGAUIInput,
   SharedStates,
@@ -14,7 +14,7 @@ export default class
   implements
     VGAPlugin,
     VGAPluginWithSharedStates,
-    VGAVisMapPlugin,
+    VGAMapPlugin,
     VGAPluginWithData<[number, number], (string | number)[]>
 {
   obtainHeaderCallback = () => `Sample Plugin (${this.layerName ?? ""})`;

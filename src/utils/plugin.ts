@@ -3,7 +3,7 @@ import type leaflet from "leaflet";
 type VGAPluginFull = VGAPlugin &
   VGAPluginWithFileAccess &
   VGAPluginWithSharedStates &
-  VGAVisMapPlugin &
+  VGAMapPlugin &
   VGADataProviderPlugin<unknown, unknown> &
   VGAPluginWithData<unknown, unknown>;
 
@@ -64,7 +64,7 @@ export interface VGAPluginWithSharedStates extends VGAPlugin {
   updateSharedStatesDelegate?: (sharedStates: SharedStates) => void;
 }
 
-export interface VGAVisMapPlugin extends VGAPlugin {
+export interface VGAMapPlugin extends VGAPlugin {
   /**
    * The `leaflet` instance passed from the plugin host..
    */
