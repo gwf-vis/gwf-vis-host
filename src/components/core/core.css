@@ -106,6 +106,10 @@ dialog {
     flex: 1;
     background: var(--leaflet-control-inner-background);
     padding: var(--leaflet-control-padding);
+
+    & > * {
+      display: block;
+    }
   }
 }
 

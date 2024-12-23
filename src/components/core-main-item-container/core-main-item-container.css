@@ -21,6 +21,10 @@
   padding: var(--leaflet-control-padding);
 }
 
+::slotted(*) {
+  display: block;
+}
+
 vga-ui-collapse::part(header) {
   margin: 0 var(--leaflet-control-margin);
 }

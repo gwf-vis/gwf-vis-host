@@ -3,6 +3,7 @@
 }
 
 [part="content-container"] {
+  position: relative;
   box-sizing: border-box;
   overflow: hidden;
   max-height: 100vh;
@@ -14,6 +15,7 @@
 }
 
 [part="header-container"] {
+  position: relative;
   display: block;
   cursor: pointer;
   transition: transform 0.3s;
@@ -48,4 +50,8 @@
 
 ::slotted([slot="header"]) {
   display: inline-block;
+}
+
+::slotted(:not([slot])) {
+  display: block;
 }
