@@ -98,6 +98,14 @@ export class VGACore extends LitElement {
 
   @property({
     type: String,
+    attribute: "view-transition-selector",
+    reflect: true,
+  })
+  @property()
+  viewTransitionSelector = `::part(vga-plugin-container)`;
+
+  @property({
+    type: String,
     attribute: "config-base-url",
     reflect: true,
   })
@@ -114,10 +122,9 @@ export class VGACore extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     if (this.useViewTransitions) {
-      const tagName = this.tagName.toLowerCase();
       const styles = /* css */ `
-      ${tagName}::part(plugin-container) {
-        view-transition-name: plugin-container;
+      ${this.viewTransitionSelector} {
+        view-transition-name: vga-plugin-container;
       }
       `;
       this.viewTransitionStyleSheet.replaceSync(styles);
@@ -530,15 +537,17 @@ export class VGACore extends LitElement {
       };
     };
     if ("startViewTransition" in document) {
-      pluginInstance?.parentElement?.part.add("plugin-container");
+      pluginInstance?.parentElement?.part.add("vga-plugin-container");
       document
         .startViewTransition(() => {
-          pluginInstance?.parentElement?.part.remove("plugin-container");
-          this.largePresenterDialogRef.value?.part.add("plugin-container");
+          pluginInstance?.parentElement?.part.remove("vga-plugin-container");
+          this.largePresenterDialogRef.value?.part.add("vga-plugin-container");
           handler();
         })
         .finished.then(() => {
-          this.largePresenterDialogRef.value?.part.remove("plugin-container");
+          this.largePresenterDialogRef.value?.part.remove(
+            "vga-plugin-container"
+          );
         });
       return;
     }
@@ -553,15 +562,17 @@ export class VGACore extends LitElement {
       originalContainer?.replaceChildren(pluginInstance ?? "");
     };
     if ("startViewTransition" in document) {
-      this.largePresenterDialogRef.value?.part.add("plugin-container");
+      this.largePresenterDialogRef.value?.part.add("vga-plugin-container");
       (document as any)
         .startViewTransition(() => {
-          this.largePresenterDialogRef.value?.part.remove("plugin-container");
-          originalContainer?.part.add("plugin-container");
+          this.largePresenterDialogRef.value?.part.remove(
+            "vga-plugin-container"
+          );
+          originalContainer?.part.add("vga-plugin-container");
           handler();
         })
         .finished.then(() => {
-          originalContainer?.part.remove("plugin-container");
+          originalContainer?.part.remove("vga-plugin-container");
         });
       return;
     }
