@@ -51,6 +51,7 @@ export class VGACore extends LitElement {
   private pluginLoadingPool: boolean[] = [];
   private pluginSharedStates: SharedStates = {};
   private askForFileAccessResolver?: (value?: unknown) => void;
+  private viewTransitionStyleSheet = new CSSStyleSheet();
 
   private _pluginLargePresenterContentInfo?: {
     header?: string;
@@ -89,6 +90,13 @@ export class VGACore extends LitElement {
   allowModifyingPageInfo = false;
 
   @property({
+    type: Boolean,
+    attribute: "use-view-transitions",
+    reflect: true,
+  })
+  useViewTransitions = false;
+
+  @property({
     type: String,
     attribute: "config-base-url",
     reflect: true,
@@ -101,6 +109,30 @@ export class VGACore extends LitElement {
       this.initialized = true;
       this.initializeVis();
     }
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    if (this.useViewTransitions) {
+      const tagName = this.tagName.toLowerCase();
+      const styles = /* css */ `
+      ${tagName}::part(plugin-container) {
+        view-transition-name: plugin-container;
+      }
+      `;
+      this.viewTransitionStyleSheet.replaceSync(styles);
+      document.adoptedStyleSheets = [
+        ...document.adoptedStyleSheets,
+        this.viewTransitionStyleSheet,
+      ];
+    }
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
+      (ss) => ss !== this.viewTransitionStyleSheet
+    );
   }
 
   render() {
@@ -497,21 +529,17 @@ export class VGACore extends LitElement {
         originalContainer: pluginInstance?.parentElement,
       };
     };
-    if ((document as any).startViewTransition) {
-      (pluginInstance?.parentElement?.style as any).viewTransitionName =
-        "plugin-container";
-      (document as any).startViewTransition(() => {
-        (pluginInstance?.parentElement?.style as any).viewTransitionName = null;
-        (this.largePresenterDialogRef.value?.style as any).viewTransitionName =
-          "plugin-container";
-        setTimeout(
-          () =>
-            ((
-              this.largePresenterDialogRef.value?.style as any
-            ).viewTransitionName = null)
-        );
-        handler();
-      });
+    if ("startViewTransition" in document) {
+      pluginInstance?.parentElement?.part.add("plugin-container");
+      document
+        .startViewTransition(() => {
+          pluginInstance?.parentElement?.part.remove("plugin-container");
+          this.largePresenterDialogRef.value?.part.add("plugin-container");
+          handler();
+        })
+        .finished.then(() => {
+          this.largePresenterDialogRef.value?.part.remove("plugin-container");
+        });
       return;
     }
     handler();
@@ -524,19 +552,17 @@ export class VGACore extends LitElement {
       this.pluginLargePresenterContentInfo = undefined;
       originalContainer?.replaceChildren(pluginInstance ?? "");
     };
-    if ((document as any).startViewTransition) {
-      (this.largePresenterDialogRef.value?.style as any).viewTransitionName =
-        "plugin-container";
-      (document as any).startViewTransition(() => {
-        (this.largePresenterDialogRef.value?.style as any).viewTransitionName =
-          null;
-        (originalContainer?.style as any).viewTransitionName =
-          "plugin-container";
-        setTimeout(
-          () => ((originalContainer?.style as any).viewTransitionName = null)
-        );
-        handler();
-      });
+    if ("startViewTransition" in document) {
+      this.largePresenterDialogRef.value?.part.add("plugin-container");
+      (document as any)
+        .startViewTransition(() => {
+          this.largePresenterDialogRef.value?.part.remove("plugin-container");
+          originalContainer?.part.add("plugin-container");
+          handler();
+        })
+        .finished.then(() => {
+          originalContainer?.part.remove("plugin-container");
+        });
       return;
     }
     handler();
